@@ -100,7 +100,12 @@
 
 
 .btn-nav-login {
+    display: none;
     float: right;
+}
+
+.btn-nav-login.active {
+    display: block;
 }
 
 /* FOOTER */
