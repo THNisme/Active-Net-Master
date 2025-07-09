@@ -4,15 +4,18 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
- * @author Hieu
+ * @author Thinh
  */
 public class TicketCategories {
 
     private int id;
     private String name;
     private String description;
+    private List<Tickets> tickets;
 
     public TicketCategories() {
     }
@@ -21,6 +24,13 @@ public class TicketCategories {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public TicketCategories(int id, String name, String description, List<Tickets> tickets) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.tickets = tickets;
     }
 
     public int getId() {

@@ -5,6 +5,8 @@
 package model;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,6 +17,9 @@ public class Cart {
     private int userId;
     private Date createdAt;
     private Date updatedAt;
+    private List<CartItems> items;
+
+    public Cart() {}
 
     public Cart(int id, int userId, Date createdAt, Date updatedAt) {
         this.id = id;
@@ -54,6 +59,12 @@ public class Cart {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
-       
+
+    public List<CartItems> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CartItems> items) {
+        this.items = items;
+    }
 }
