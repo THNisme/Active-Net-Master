@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class DBContext {
 
-    protected Connection conn = null;
+    public Connection conn = null;
 
     public DBContext() {
         try {
@@ -25,7 +25,7 @@ public class DBContext {
             String dbURL = "jdbc:sqlserver://localhost:1433;"
                     + "databaseName=Active_Net_Master;"
                     + "user=sa;"
-                    + "password=123456;"
+                    + "password=688464672;"
                     + "encrypt=true;trustServerCertificate=true;";
             conn = DriverManager.getConnection(dbURL);
             if (conn != null) {
