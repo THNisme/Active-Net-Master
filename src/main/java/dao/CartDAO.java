@@ -9,20 +9,19 @@ package dao;
  * @author Admin
  */
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
+import model.CartItems;
 import utils.DBContext;
 
 public class CartDAO extends DBContext {
-
     public CartDAO() {
         super();
     }
 
-    public Cart getCartByUserId(int userId) {
+       public Cart getCartByUserId(int userId) {
         String sql = "SELECT * FROM carts WHERE user_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -30,11 +29,16 @@ public class CartDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int id = rs.getInt("id");
-                int uid = rs.getInt("user_id");
                 java.sql.Date createdAt = rs.getDate("created_at");
                 java.sql.Date updatedAt = rs.getDate("updated_at");
 
-                return new Cart(id, uid, createdAt, updatedAt);
+                Cart cart = new Cart(id, userId, createdAt, updatedAt);
+
+                CartItemsDAO itemsDAO = new CartItemsDAO();
+                List<CartItems> items = itemsDAO.getItemsByCartId(id);
+                cart.setItems(items);
+
+                return cart;
             }
         } catch (Exception e) {
             System.out.println("getCartByUserId: " + e.getMessage());
@@ -50,14 +54,14 @@ public class CartDAO extends DBContext {
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt(1); // trả về ID cart vừa tạo
+                return rs.getInt(1); 
             }
         } catch (Exception e) {
             System.out.println("createCart: " + e.getMessage());
         }
         return -1;
     }
-
+    
     public List<Cart> getAllCarts() {
         String sql = "SELECT * FROM carts";
         List<Cart> list = new ArrayList<>();
@@ -70,21 +74,17 @@ public class CartDAO extends DBContext {
                 java.sql.Date createdAt = rs.getDate("created_at");
                 java.sql.Date updatedAt = rs.getDate("updated_at");
 
-                list.add(new Cart(id, uid, createdAt, updatedAt));
+                Cart cart = new Cart(id, uid, createdAt, updatedAt);
+
+                CartItemsDAO itemsDAO = new CartItemsDAO();
+                List<CartItems> items = itemsDAO.getItemsByCartId(id);
+                cart.setItems(items);
+
+                list.add(cart);
             }
         } catch (Exception e) {
             System.out.println("getAllCarts: " + e.getMessage());
         }
         return list;
     }
-
-    // Dùng để test
-//    public static void main(String[] args) {
-//        CartDAO dao = new CartDAO();
-//        List<Cart> carts = dao.getAllCarts();
-//        for (Cart c : carts) {
-//            System.out.println("Cart ID: " + c.getId());
-//            System.out.println("User ID: " + c.getUserId());
-//        }
-//    }
 }

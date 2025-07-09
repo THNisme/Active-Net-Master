@@ -12,25 +12,26 @@ import java.sql.Date;
  */
 public class CartItems {
     private int id;
-    private int cartId;
-    private String itemType;
-    private int itemId;
+    private Cart cart;            
+    private String itemType;    
+    private int itemId;          
     private int quantity;
     private int unitPrice;
     private Date addedAt;
 
-    public CartItems(int id, int cartId, String itemType, int itemId, int quantity, int unitPrice, Date addedAt) {
+    public CartItems() {
+    }
+
+    public CartItems(int id, Cart cart, String itemType, int itemId, int quantity, int unitPrice, Date addedAt) {
         this.id = id;
-        this.cartId = cartId;
+        this.cart = cart;
         this.itemType = itemType;
         this.itemId = itemId;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.addedAt = addedAt;
     }
-    public CartItems() {
-    }
-    
+
     public int getId() {
         return id;
     }
@@ -39,12 +40,12 @@ public class CartItems {
         this.id = id;
     }
 
-    public int getCartId() {
-        return cartId;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public String getItemType() {
@@ -86,7 +87,4 @@ public class CartItems {
     public void setAddedAt(Date addedAt) {
         this.addedAt = addedAt;
     }
-    
-    
-    
 }
