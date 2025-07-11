@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Order {
     private int id;
-    private Users user;
+    private User user;
     private int totalAmount;
     private String status;
     private String bankTransferNote;
@@ -21,7 +21,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, Users user, int totalAmount, String status, String bankTransferNote, Date createAt) {
+    public Order(int id, User user, int totalAmount, String status, String bankTransferNote, Date createAt) {
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;
@@ -38,11 +38,11 @@ public class Order {
         this.id = id;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

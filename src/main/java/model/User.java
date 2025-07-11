@@ -5,31 +5,47 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
- * @author Admin
+ * @author Tran Hieu Nghia - CE191115
  */
-public class Users {
+public class User {
+
     private int id;
     private String name;
     private String email;
     private String phone;
     private String passwordHash;
     private int role;
-    private Date createAt;
+    private Date createdAt;
+    private List<Cart> carts;
+    private List<Order> orders;
 
-    public Users() {
+    public User() {
     }
 
-    public Users(int id, String name, String email, String phone, String passwordHash, int role, Date createAt) {
+    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, List<Cart> carts, List<Order> orders) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.passwordHash = passwordHash;
         this.role = role;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
+        this.carts = carts;
+        this.orders = orders;
+    }
+
+    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -80,13 +96,28 @@ public class Users {
         this.role = role;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
-    
-    
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
 }

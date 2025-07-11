@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Order;
-import model.Users;
+import model.User;
 import utils.DBContext;
 
 /**
@@ -34,15 +34,15 @@ public class OrderDAO extends DBContext {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 int userId = rs.getInt("user_id");
-                UserDAO uDao = new UserDAO();
-                Users u = uDao.getUserById(userId);
+//                UserDAO uDao = new UserDAO();
+//                User u = uDao.getUserById(userId);
                 int totalAmount = rs.getInt("total_amount");
                 String status = rs.getString("status");
                 String bankTransferNote = rs.getString("bank_transfer_note");
                 Date createdAt = rs.getDate("created_at");
 
-                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
-                list.add(o);
+//                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
+//                list.add(o);
             }
 
         } catch (Exception e) {
@@ -61,15 +61,15 @@ public class OrderDAO extends DBContext {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                UserDAO uDao = new UserDAO();
-                Users u = uDao.getUserById(userId);
+//                UserDAO uDao = new UserDAO();
+//                User u = uDao.getUserById(userId);
                 int totalAmount = rs.getInt("total_amount");
                 String status = rs.getString("status");
                 String bankTransferNote = rs.getString("bank_transfer_note");
                 Date createdAt = rs.getDate("created_at");
 
-                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
-                list.add(o);
+//                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
+//                list.add(o);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -86,14 +86,14 @@ public class OrderDAO extends DBContext {
 
             if (rs.next()) {
                 int userId = rs.getInt("user_id");
-                UserDAO uDao = new UserDAO();
-                Users u = uDao.getUserById(userId);
+//                UserDAO uDao = new UserDAO();
+//                User u = uDao.getUserById(userId);
                 int totalAmount = rs.getInt("total_amount");
                 String status = rs.getString("status");
                 String bankTransferNote = rs.getString("bank_transfer_note");
                 Date createdAt = rs.getDate("created_at");
 
-                return new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
+//                return new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
