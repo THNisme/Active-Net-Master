@@ -6,7 +6,7 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author Nguyễn Đào Thu Ngân
  */
 public class OrderItem {
     private int id;

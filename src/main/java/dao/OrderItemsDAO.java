@@ -14,7 +14,7 @@ import utils.DBContext;
 
 /**
  *
- * @author Ngan
+ * @author Nguyễn Đào Thu Ngân
  */
 public class OrderItemsDAO extends DBContext {
 
@@ -23,14 +23,11 @@ public class OrderItemsDAO extends DBContext {
     }
 
     public List<OrderItem> getItemsByOrderId(int orderId) {
-        List list = new ArrayList();
-        String sql = "SELECT order_items.id, cart_items.item_type, cart_items.item_id, cart_items.quantity, cart_items.unit_price\n"
+        List<OrderItem> list = new ArrayList();
+        String sql = "SELECT    order_items.*\n"
                 + "FROM         order_items INNER JOIN\n"
-                + "                      orders ON order_items.order_id = orders.id INNER JOIN\n"
-                + "                      users ON orders.user_id = users.id INNER JOIN\n"
-                + "                      carts ON users.id = carts.user_id INNER JOIN\n"
-                + "                      cart_items ON carts.id = cart_items.cart_id"
-                + "					  where orders.id = ?";
+                + "                      orders ON order_items.order_id = orders.id\n"
+                + "					  where order_id = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -38,7 +35,7 @@ public class OrderItemsDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
             OrderDAO orderDao = new OrderDAO();
             while (rs.next()) {
-                int id = rs.getInt("order_items.id");
+                int id = rs.getInt("id");
                 Order o = orderDao.getOrderById(orderId);
                 String itemType = rs.getString("item_type");
                 int itemId = rs.getInt("item_id");
@@ -53,23 +50,23 @@ public class OrderItemsDAO extends DBContext {
 
         return list;
     }
-    
-    public void createOrderItem(int orderId, String itemType, int itemId, int quantity, int unitPrice){
-        String sql = "INSERT INTO order_items (order_id, item_type, item_id, qquantity, unit_price) VALUES (?,?,?,?,?)";
+
+    public void create(int orderId, String itemType, int itemId, int quantity, int unitPrice) {
+        String sql = "INSERT INTO order_items (order_id, item_type, item_id, quantity, unit_price) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, orderId);
-            ps.setString(1, itemType);
-            ps.setInt(1, itemId);
-            ps.setInt(1, quantity);
-            ps.setInt(1, unitPrice);
+            ps.setString(2, itemType);
+            ps.setInt(3, itemId);
+            ps.setInt(4, quantity);
+            ps.setInt(5, unitPrice);
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
-    public void deleteItemsByOrderItemId(int orderItemId) {
+
+    public void delete(int orderItemId) {
         String sql = "DELETE FROM order_items WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -77,6 +74,33 @@ public class OrderItemsDAO extends DBContext {
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void update(int id, int orderId, String itemType, int itemId, int quantity, int unitPrice) {
+        String sql = "UPDATE order_items\n"
+                + "SET order_id = ?, item_type = ?, item_id = ?, quantity = ?, unit_price = ?\n"
+                + "WHERE id = ?;";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ps.setString(2, itemType);
+            ps.setInt(3, itemId);
+            ps.setInt(4, quantity);
+            ps.setInt(5, unitPrice);
+            ps.setInt(6, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void main(String[] args) {
+        OrderItemsDAO dao = new OrderItemsDAO();
+        List<OrderItem> list = dao.getItemsByOrderId(1);
+        for (OrderItem o : list) {
+            System.out.println(o.getItemId() + " " + o.getItemType());
         }
     }
 }

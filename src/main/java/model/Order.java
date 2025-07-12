@@ -5,10 +5,11 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
- * @author Admin
+ * @author Nguyễn Đào Thu Ngân
  */
 public class Order {
     private int id;
@@ -17,10 +18,12 @@ public class Order {
     private String status;
     private String bankTransferNote;
     private Date createAt;
+    private List<OrderItem> items;
+    private ManualPayment manualPayment;
 
     public Order() {
     }
-
+    
     public Order(int id, User user, int totalAmount, String status, String bankTransferNote, Date createAt) {
         this.id = id;
         this.user = user;
@@ -78,5 +81,20 @@ public class Order {
         this.createAt = createAt;
     }
 
-    
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    public ManualPayment getManualPayment() {
+        return manualPayment;
+    }
+
+    public void setManualPayment(ManualPayment manualPayment) {
+        this.manualPayment = manualPayment;
+    }
+
 }
