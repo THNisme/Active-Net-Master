@@ -4,7 +4,7 @@
  */
 package model;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -12,7 +12,6 @@ import java.util.List;
  * @author Tran Hieu Nghia - CE191115
  */
 public class User {
-
     private int id;
     private String name;
     private String email;
@@ -20,13 +19,15 @@ public class User {
     private String passwordHash;
     private int role;
     private Date createdAt;
+    
     private List<Cart> carts;
     private List<Order> orders;
+    private List<Message> messages;
 
     public User() {
     }
 
-    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, List<Cart> carts, List<Order> orders) {
+    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, List<Cart> carts, List<Order> orders, List<Message> messages) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -36,6 +37,7 @@ public class User {
         this.createdAt = createdAt;
         this.carts = carts;
         this.orders = orders;
+        this.messages = messages;
     }
 
     public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt) {
@@ -46,6 +48,9 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
         this.createdAt = createdAt;
+        this.carts = null;
+        this.orders = null;
+        this.messages = null;
     }
 
     public int getId() {
@@ -120,4 +125,16 @@ public class User {
         this.orders = orders;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+    
+    
+    
+   
+    
 }

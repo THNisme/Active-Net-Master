@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Event;
+import model.Message;
 import model.Tickets;
+import model.User;
 import utils.DBContext;
 
 /**
@@ -44,7 +46,7 @@ public class EventsDAO extends DBContext {
                 // Tạo event
                 Event event = new Event(id, name, des, date, location, created);
 
-                // Lấy danh sách vé theo event_id
+                // Lấy danh sách vé theo event_id SAI ROIF BAN HIEU OWI
                 List<Tickets> tickets = ticketsDAO.getTicketsByEventId(id);
                 event.setTickets(tickets); // Gán vé vào sự kiện
 
@@ -124,13 +126,45 @@ public class EventsDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-    
+
+//    public List<Tickets> loadTicketsByEventId(int eventID) {
+//        String sql = "SELECT * FROM messages \n"
+//                + "WHERE users_id = ?";
+//
+//        List<Message> list = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setInt(1, userId);
+//
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                int idDB = rs.getInt("id");
+//                int userIdDB = rs.getInt("users_id");
+//                String content = rs.getString("content");
+//                boolean readed = rs.getBoolean("readed");
+//                java.sql.Date realeaseDate = rs.getDate("release_date");
+//
+//                UserDAO userDao = new UserDAO();
+//                User userById = userDao.getUserById(userId);
+//
+//                Message message = new Message(idDB, userById, content, readed, realeaseDate);
+//
+//                list.add(message);
+//
+//                return list;
+//            }
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return null;
+//    }
+
     public static void main(String[] args) {
         EventsDAO dao = new EventsDAO();
         for (Event e : dao.getAll()) {
             System.out.println(e.getId() + "  " + e.getName());
             for (Tickets t : e.getTickets()) {
-                System.out.println(t.getId() + "  " );
+                System.out.println(t.getId() + "  ");
             }
         }
     }
