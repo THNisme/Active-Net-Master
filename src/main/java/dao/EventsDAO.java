@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Event;
-import model.TicketCategories;
+import model.Tickets;
 import utils.DBContext;
 
 /**
@@ -24,12 +24,14 @@ public class EventsDAO extends DBContext {
     }
 
     public List<Event> getAll() {
-        String sql = "select * from[dbo].[events]";
+        String sql = "SELECT * FROM [dbo].[events]";
         List<Event> list = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
+
+            TicketsDAO ticketsDAO = new TicketsDAO(); // Khởi tạo 1 lần ngoài vòng lặp
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -37,14 +39,21 @@ public class EventsDAO extends DBContext {
                 String des = rs.getString("description");
                 Date date = rs.getDate("date");
                 String location = rs.getString("location");
-                Date created = rs.getDate("create_at");
-                Event events = new Event(id, name, des, date, location, created);
+                Date created = rs.getDate("created_at");
 
-                list.add(events);
+                // Tạo event
+                Event event = new Event(id, name, des, date, location, created);
+
+                // Lấy danh sách vé theo event_id
+                List<Tickets> tickets = ticketsDAO.getTicketsByEventId(id);
+                event.setTickets(tickets); // Gán vé vào sự kiện
+
+                list.add(event);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
         return list;
     }
 
@@ -70,7 +79,7 @@ public class EventsDAO extends DBContext {
         return null;
     }
 
-    public void addEvent(String name, String description, Date date, String location, Date createdAt) {
+    public void create(String name, String description, Date date, String location, Date createdAt) {
         String sql = "INSERT INTO events (name, description, date, location, created_at) VALUES(?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -85,4 +94,44 @@ public class EventsDAO extends DBContext {
         }
     }
 
+    public void update(int id, String name, String description, Date date, String location, Date created_at) {
+        String sql = "UPDATE [dbo].[events] SET [name] = ?, [description] = ?, [date] = ?, [location] = ?, [create_at] = ? WHERE [id] = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, description);
+            ps.setDate(3, new java.sql.Date(date.getTime()));
+            ps.setString(4, location);
+            ps.setDate(5, new java.sql.Date(created_at.getTime()));
+            ps.setInt(6, id);
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void delete(int id) {
+        String sql = "DELETE FROM events WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void main(String[] args) {
+        EventsDAO dao = new EventsDAO();
+        for (Event e : dao.getAll()) {
+            System.out.println(e.getId() + "  " + e.getName());
+            for (Tickets t : e.getTickets()) {
+                System.out.println(t.getId() + "  " );
+            }
+        }
+    }
 }

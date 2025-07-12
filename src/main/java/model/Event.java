@@ -5,6 +5,7 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -18,6 +19,16 @@ public class Event {
     private Date date;
     private String location;
     private Date created_at;
+
+    private List<Tickets> tickets;
+
+    public List<Tickets> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Tickets> tickets) {
+        this.tickets = tickets;
+    }
 
     public Event() {
     }
