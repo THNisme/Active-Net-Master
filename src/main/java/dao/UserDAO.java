@@ -192,30 +192,38 @@ public class UserDAO extends DBContext {
             ps.setInt(1, userId);
 
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 int idDB = rs.getInt("id");
                 int userIdDB = rs.getInt("users_id");
                 String content = rs.getString("content");
                 boolean readed = rs.getBoolean("readed");
                 Date realeaseDate = rs.getDate("release_date");
 
-                UserDAO userDao = new UserDAO();
-                User userById = userDao.getUserById(userId);
+//                UserDAO userDao = new UserDAO();
+                User userById = getUserById(userId);
                 
                 Message message = new Message(idDB, userById, content, readed, realeaseDate);
-
                 list.add(message);
-
-                return list;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return list;
     }
-
+    
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
+        
+        
+        List<Message> messList = dao.loadMessageByUserId(6);
+
+        for (Message m : messList) {
+            System.out.println(m.getContent());
+            System.out.println("---------------");
+        }
+        
+        
+        
 //        System.out.println(dao.login("admin@gmail.com", "123456").getId());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getName());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getEmail());
@@ -224,9 +232,9 @@ public class UserDAO extends DBContext {
 //        System.out.println(dao.login("admin@gmail.com", "123456").getRole() + "");
 //        System.out.println(dao.login("admin@gmail.com", "123456").getCreatedAt());
 
-        dao.delete(9);
+//        dao.delete(9);
 
-        List<User> list = dao.getAll();
+//        List<User> list = dao.getAll();
 //        for (User u : list) {
 //            System.out.println(u.getId());
 //            System.out.println(u.getName());
@@ -239,16 +247,7 @@ public class UserDAO extends DBContext {
 //            System.out.println("-----------------");
 //        }
 
-        List<Message> messList = dao.loadMessageByUserId(1);
-
-        for (Message m : messList) {
-            System.out.println(m.getId());
-            System.out.println(m.getUser().getEmail());
-            System.out.println(m.getContent());
-            System.out.println(m.isReaded());
-            System.out.println(m.getReleaseDate().toString());
-            System.out.println("---------------");
-        }
+        
 
 //        User u = dao.getUserById(7);
 //
