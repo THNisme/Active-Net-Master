@@ -8,9 +8,9 @@ import java.sql.Date;
 
 /**
  *
- * @author Admin
+ * @author Tính
  */
-public class CartItems {
+public class CartItem {
     private int id;
     private Cart cart;            
     private String itemType;    
@@ -19,10 +19,10 @@ public class CartItems {
     private int unitPrice;
     private Date addedAt;
 
-    public CartItems() {
+    public CartItem() {
     }
 
-    public CartItems(int id, Cart cart, String itemType, int itemId, int quantity, int unitPrice, Date addedAt) {
+    public CartItem(int id, Cart cart, String itemType, int itemId, int quantity, int unitPrice, Date addedAt) {
         this.id = id;
         this.cart = cart;
         this.itemType = itemType;
