@@ -8,7 +8,7 @@ import java.sql.Date;
 
 /**
  *
- * @author ADMIN
+ * @author Thinh
  */
 public class ManualPayment {
      private int id;
