@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Event;
 import model.TicketCategories;
-import model.Tickets;
+import model.Ticket;
 import utils.DBContext;
 
 /**
@@ -23,9 +23,9 @@ public class TicketsDAO extends DBContext {
         super();
     }
 
-    public List<Tickets> getAll() {
+    public List<Ticket> getAll() {
         String sql = "select * from[dbo].[tickets]";
-        List<Tickets> list = new ArrayList<>();
+        List<Ticket> list = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -43,7 +43,7 @@ public class TicketsDAO extends DBContext {
                 int cateId = rs.getInt("category_id");
                 TicketCategoriesDAO ticketDao = new TicketCategoriesDAO();
                 TicketCategories t = ticketDao.getTicketCategoryById(cateId);
-                Tickets ticket = new Tickets(tikId, e, name, price, quantity, img, t);
+                Ticket ticket = new Ticket(tikId, e, name, price, quantity, img, t);
 
                 list.add(ticket);
             }
@@ -53,7 +53,7 @@ public class TicketsDAO extends DBContext {
         return list;
     }
 
-    public Tickets getTicketById(int id) {
+    public Ticket getTicketById(int id) {
         String sql = "SELECT * FROM tickets WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -64,7 +64,7 @@ public class TicketsDAO extends DBContext {
 
                     int cateId = rs.getInt("category_id");
                     TicketCategories t = new TicketCategoriesDAO().getTicketCategoryById(cateId);
-                    return new Tickets(
+                    return new Ticket(
                             rs.getInt("id"),
                             e,
                             rs.getString("name"),
@@ -130,39 +130,39 @@ public class TicketsDAO extends DBContext {
         }
     }
 
-    public List<Tickets> getTicketsByEventId(int eventId) {
-        String sql = "SELECT * FROM tickets WHERE event_id = ?";
-        List<Tickets> list = new ArrayList<>();
+//    public List<Tickets> getTicketsByEventId(int eventId) {
+//        String sql = "SELECT * FROM tickets WHERE event_id = ?";
+//        List<Tickets> list = new ArrayList<>();
+//
+//        try {
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setInt(1, eventId);
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                int tikId = rs.getInt("id");
+//                String name = rs.getString("name");
+//                int price = rs.getInt("price");
+//                int quantity = rs.getInt("quantity");
+//                String img = rs.getString("image_url");
+//
+//                // Gọi lại các đối tượng liên quan
+//                Event e = new EventsDAO().getEventById(eventId); // hoặc có thể truyền từ ngoài vào để đỡ tốn truy vấn
+//                int cateId = rs.getInt("category_id");
+//                TicketCategories t = new TicketCategoriesDAO().getTicketCategoryById(cateId);
+//
+//                Ticket ticket = new Ticket(tikId, e, name, price, quantity, img, t);
+//                list.add(ticket);
+//            }
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        return list;
+//    }
 
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, eventId);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int tikId = rs.getInt("id");
-                String name = rs.getString("name");
-                int price = rs.getInt("price");
-                int quantity = rs.getInt("quantity");
-                String img = rs.getString("image_url");
-
-                // Gọi lại các đối tượng liên quan
-                Event e = new EventsDAO().getEventById(eventId); // hoặc có thể truyền từ ngoài vào để đỡ tốn truy vấn
-                int cateId = rs.getInt("category_id");
-                TicketCategories t = new TicketCategoriesDAO().getTicketCategoryById(cateId);
-
-                Tickets ticket = new Tickets(tikId, e, name, price, quantity, img, t);
-                list.add(ticket);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        return list;
-    }
-
-    public List<Tickets> searchTicketsByName(String name) {
-        List<Tickets> list = new ArrayList<>();
+    public List<Ticket> searchTicketsByName(String name) {
+        List<Ticket> list = new ArrayList<>();
         String sql = "SELECT * FROM tickets WHERE name LIKE ?";
 
         try {
@@ -186,7 +186,7 @@ public class TicketsDAO extends DBContext {
                 int cateId = rs.getInt("category_id");
                 TicketCategories t = cateDao.getTicketCategoryById(cateId);
 
-                Tickets ticket = new Tickets(id, e, rs.getString("name"), price, quantity, image, t);
+                Ticket ticket = new Ticket(id, e, rs.getString("name"), price, quantity, image, t);
                 list.add(ticket);
             }
         } catch (Exception e) {
@@ -197,7 +197,7 @@ public class TicketsDAO extends DBContext {
     }
     public static void main(String[] args) {
         TicketsDAO dao = new TicketsDAO();
-        for (Tickets e : dao.getAll()) {
+        for (Ticket e : dao.getAll()) {
             System.out.println(e.getId() + "  " + e.getName());
         }
     }

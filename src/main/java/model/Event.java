@@ -20,13 +20,13 @@ public class Event {
     private String location;
     private Date created_at;
 
-    private List<Tickets> tickets;
+    private List<Ticket> tickets;
 
-    public List<Tickets> getTickets() {
+    public List<Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<Tickets> tickets) {
+    public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
     }
 
@@ -40,6 +40,17 @@ public class Event {
         this.date = date;
         this.location = location;
         this.created_at = created_at;
+        this.tickets = null;
+    }
+
+    public Event(int id, String name, String description, Date date, String location, Date created_at, List<Ticket> tickets) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.location = location;
+        this.created_at = created_at;
+        this.tickets = tickets;
     }
 
     public int getId() {

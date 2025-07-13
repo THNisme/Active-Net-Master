@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Event;
-import model.Message;
-import model.Tickets;
-import model.User;
+import model.TicketCategories;
+import model.Ticket;
 import utils.DBContext;
 
 /**
@@ -33,8 +32,6 @@ public class EventsDAO extends DBContext {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            TicketsDAO ticketsDAO = new TicketsDAO(); // Khởi tạo 1 lần ngoài vòng lặp
-
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
@@ -43,12 +40,7 @@ public class EventsDAO extends DBContext {
                 String location = rs.getString("location");
                 Date created = rs.getDate("created_at");
 
-                // Tạo event
                 Event event = new Event(id, name, des, date, location, created);
-
-                // Lấy danh sách vé theo event_id SAI ROIF BAN HIEU OWI
-                List<Tickets> tickets = ticketsDAO.getTicketsByEventId(id);
-                event.setTickets(tickets); // Gán vé vào sự kiện
 
                 list.add(event);
             }
@@ -127,45 +119,46 @@ public class EventsDAO extends DBContext {
         }
     }
 
-//    public List<Tickets> loadTicketsByEventId(int eventID) {
-//        String sql = "SELECT * FROM messages \n"
-//                + "WHERE users_id = ?";
-//
-//        List<Message> list = new ArrayList<>();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ps.setInt(1, userId);
-//
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                int idDB = rs.getInt("id");
-//                int userIdDB = rs.getInt("users_id");
-//                String content = rs.getString("content");
-//                boolean readed = rs.getBoolean("readed");
-//                java.sql.Date realeaseDate = rs.getDate("release_date");
-//
-//                UserDAO userDao = new UserDAO();
-//                User userById = userDao.getUserById(userId);
-//
-//                Message message = new Message(idDB, userById, content, readed, realeaseDate);
-//
-//                list.add(message);
-//
-//                return list;
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return null;
-//    }
+    public List<Ticket> loadTicketsByEventId(int eventID) {
+        String sql = "SELECT tickets.*, ticket_categories.name AS categoryname, ticket_categories.description\n"
+                + "FROM     tickets INNER JOIN\n"
+                + "                  ticket_categories ON tickets.category_id = ticket_categories.id where event_id = ?";
+
+        List<Ticket> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, eventID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int tikId = rs.getInt("id");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int quantity = rs.getInt("quantity");
+                String img = rs.getString("image_url");
+
+                int id = rs.getInt("category_id");
+                String cateName = rs.getString("categoryname");
+                String description = rs.getString("description");
+
+                TicketCategories ticketcate = new TicketCategories(id, cateName, description);
+
+                Ticket ticket = new Ticket(tikId, getEventById(eventID), name, price, quantity, img, ticketcate);
+
+                list.add(ticket);
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
 
     public static void main(String[] args) {
         EventsDAO dao = new EventsDAO();
-        for (Event e : dao.getAll()) {
-            System.out.println(e.getId() + "  " + e.getName());
-            for (Tickets t : e.getTickets()) {
-                System.out.println(t.getId() + "  ");
-            }
+        for (Ticket t : dao.loadTicketsByEventId(1)) {
+            System.out.println(t.getId());
+            System.out.println(t.getCategory().getName());
         }
     }
 }

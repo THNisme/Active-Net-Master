@@ -15,7 +15,7 @@ public class TicketCategories {
     private int id;
     private String name;
     private String description;
-    private List<Tickets> tickets;
+    private List<Ticket> tickets;
 
     public TicketCategories() {
     }
@@ -26,7 +26,7 @@ public class TicketCategories {
         this.description = description;
     }
 
-    public TicketCategories(int id, String name, String description, List<Tickets> tickets) {
+    public TicketCategories(int id, String name, String description, List<Ticket> tickets) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -8,7 +8,7 @@ package model;
  *
  * @author Hieu
  */
-public class Tickets {
+public class Ticket {
 
     private int id;
     private Event event;
@@ -18,10 +18,10 @@ public class Tickets {
     private String imageUrl;
     private TicketCategories category;
 
-    public Tickets() {
+    public Ticket() {
     }
 
-    public Tickets(int id, Event event, String name, int price, int quantity, String imageUrl, TicketCategories category) {
+    public Ticket(int id, Event event, String name, int price, int quantity, String imageUrl, TicketCategories category) {
         this.id = id;
         this.event = event;
         this.name = name;
