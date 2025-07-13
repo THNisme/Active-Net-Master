@@ -7,7 +7,6 @@ package dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import model.ManualPayment;
@@ -20,7 +19,7 @@ import utils.DBContext;
  */
 public class ManualPaymentDAO extends DBContext {
 
-    public ManualPaymentDAO() {
+     public ManualPaymentDAO() {
         super();
     }
 
@@ -38,7 +37,9 @@ public class ManualPaymentDAO extends DBContext {
                 int orderId = rs.getInt("order_id");
                 String content = rs.getString("transfer_content");
                 boolean confirmed = rs.getBoolean("confirmed_by_admin");
-                Timestamp confirmedAt = rs.getTimestamp("confirmed_at");
+                
+                // Sử dụng java.sql.Date thay vì Timestamp
+                Date confirmedAt = rs.getDate("confirmed_at");
                 
                 // Tạo đối tượng Order chỉ với ID
                 Order order = new Order();
@@ -49,7 +50,7 @@ public class ManualPaymentDAO extends DBContext {
                     order, 
                     content, 
                     confirmed, 
-                    confirmedAt != null ? new Date(confirmedAt.getTime()) : null
+                    confirmedAt // Đã là java.sql.Date
                 ));
             }
         } catch (Exception e) {
@@ -71,9 +72,10 @@ public class ManualPaymentDAO extends DBContext {
                 int orderId = rs.getInt("order_id");
                 String content = rs.getString("transfer_content");
                 boolean confirmed = rs.getBoolean("confirmed_by_admin");
-                Timestamp confirmedAt = rs.getTimestamp("confirmed_at");
                 
-                // Tạo đối tượng Order chỉ với ID
+                // Sử dụng java.sql.Date
+                Date confirmedAt = rs.getDate("confirmed_at");
+                
                 Order order = new Order();
                 order.setId(orderId);
                 
@@ -82,7 +84,7 @@ public class ManualPaymentDAO extends DBContext {
                     order, 
                     content, 
                     confirmed, 
-                    confirmedAt != null ? new Date(confirmedAt.getTime()) : null
+                    confirmedAt
                 );
             }
         } catch (Exception e) {
@@ -100,8 +102,14 @@ public class ManualPaymentDAO extends DBContext {
             ps.setInt(1, payment.getOrder().getId());
             ps.setString(2, payment.getTransferContent());
             ps.setBoolean(3, payment.isConfirmedByAdmin());
-            ps.setTimestamp(4, payment.getConfirmedAt() != null ? 
-                new Timestamp(payment.getConfirmedAt().getTime()) : null);
+            
+            // Sử dụng setDate thay vì setTimestamp
+            if (payment.getConfirmedAt() != null) {
+                ps.setDate(4, new java.sql.Date(payment.getConfirmedAt().getTime()));
+            } else {
+                ps.setDate(4, null);
+            }
+            
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println("create: " + e.getMessage());
@@ -116,8 +124,14 @@ public class ManualPaymentDAO extends DBContext {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, payment.getTransferContent());
             ps.setBoolean(2, payment.isConfirmedByAdmin());
-            ps.setTimestamp(3, payment.getConfirmedAt() != null ? 
-                new Timestamp(payment.getConfirmedAt().getTime()) : null);
+            
+            // Sử dụng setDate
+            if (payment.getConfirmedAt() != null) {
+                ps.setDate(3, new java.sql.Date(payment.getConfirmedAt().getTime()));
+            } else {
+                ps.setDate(3, null);
+            }
+            
             ps.setInt(4, payment.getId());
             ps.executeUpdate();
         } catch (Exception e) {
@@ -125,7 +139,7 @@ public class ManualPaymentDAO extends DBContext {
         }
     }
 
-    // Xóa thanh toán thủ công
+    // Xóa thanh toán thủ công (giữ nguyên)
     public void delete(int id) {
         String sql = "DELETE FROM manual_payments WHERE id = ?";
         
@@ -144,16 +158,19 @@ public class ManualPaymentDAO extends DBContext {
         
         // Test create
         Order order = new Order();
-        order.setId(1); // Giả sử có đơn hàng ID 1
+        order.setId(1);
         
-        ManualPayment payment = new ManualPayment(
-            0, // ID mới
-            order, 
-            "ABC123", 
-            false, 
-            null
-        );
-        dao.create(payment);
+        // Tạo ngày xác nhận (chỉ ngày, không giờ)
+//        java.util.Date confirmedAt = new java.util.Date();
+//        
+//        ManualPayment payment = new ManualPayment(
+//            0,
+//            order, 
+//            "ABC123", 
+//            false, 
+//            confirmedAt
+//        );
+//        dao.create(payment);
         
         // Test getAll
         System.out.println("All payments:");
@@ -161,15 +178,14 @@ public class ManualPaymentDAO extends DBContext {
             System.out.println(mp.getId() + " - Order: " + mp.getOrder().getId());
         }
         
-//        // Test update
-//        payment.setTransferContent("XYZ789");
-//        payment.setConfirmedByAdmin(true);
-//        payment.setConfirmedAt(new Date());
-//        dao.update(payment);
-//        
         // Test getById
         ManualPayment updated = dao.getManualPaymentByOrderId(1);
-        System.out.println("Updated payment: " + updated.getTransferContent());
+        System.out.println("Payment content: " + updated.getTransferContent());
+        
+        // Test update
+        updated.setTransferContent("XYZ789");
+        updated.setConfirmedByAdmin(true);
+        dao.update(updated);
         
         // Test delete
         dao.delete(2);
