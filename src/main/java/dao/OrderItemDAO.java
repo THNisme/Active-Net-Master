@@ -4,45 +4,66 @@
  */
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 import model.OrderItem;
+import model.User;
 import utils.DBContext;
 
 /**
  *
  * @author Nguyễn Đào Thu Ngân
  */
-public class OrderItemsDAO extends DBContext {
+public class OrderItemDAO extends DBContext {
 
-    public OrderItemsDAO() {
+    public OrderItemDAO() {
         super();
     }
 
-    public List<OrderItem> getItemsByOrderId(int orderId) {
+    public List<OrderItem> getAll() {
         List<OrderItem> list = new ArrayList();
-        String sql = "SELECT    order_items.*\n"
-                + "FROM         order_items INNER JOIN\n"
-                + "                      orders ON order_items.order_id = orders.id\n"
-                + "					  where order_id = ?";
+        String sql = "SELECT    order_items.*, orders.user_id, orders.total_amount, orders.status, orders.bank_transfer_note, orders.created_at, users.name, users.email, users.phone, users.password_hash, users.role, \n"
+                + "                      users.created_at AS user_created_at\n"
+                + "FROM         users INNER JOIN\n"
+                + "                      orders ON users.id = orders.user_id INNER JOIN\n"
+                + "                      order_items ON orders.id = order_items.order_id";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
-            OrderDAO orderDao = new OrderDAO();
             while (rs.next()) {
                 int id = rs.getInt("id");
-                Order o = orderDao.getOrderById(orderId);
                 String itemType = rs.getString("item_type");
                 int itemId = rs.getInt("item_id");
                 int quantity = rs.getInt("quantity");
                 int unitPrice = rs.getInt("unit_price");
-                OrderItem orderItems = new OrderItem(id, o, itemType, itemId, quantity, unitPrice);
-                list.add(orderItems);
+
+                int orderId = rs.getInt("order_id");
+                int totalAmount = rs.getInt("total_amount");
+                String status = rs.getString("status");
+                String bankTransferNote = rs.getString("bank_transfer_note");
+                Date createdAt = rs.getDate("created_at");
+
+                int userId = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
+
+                Order o = new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
+
+                OrderItem oI = new OrderItem(id, o, itemType, itemId, quantity, unitPrice);
+
+                list.add(oI);
+
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -97,10 +118,10 @@ public class OrderItemsDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-        OrderItemsDAO dao = new OrderItemsDAO();
-        List<OrderItem> list = dao.getItemsByOrderId(1);
-        for (OrderItem o : list) {
-            System.out.println(o.getItemId() + " " + o.getItemType());
+        OrderItemDAO dao = new OrderItemDAO();
+        for (OrderItem o : dao.getAll()) {
+            System.out.println(o.getId());
+            System.out.println(o.getItemType());
         }
     }
 }

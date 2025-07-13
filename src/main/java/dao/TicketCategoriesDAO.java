@@ -15,9 +15,9 @@ import utils.DBContext;
  *
  * @author Thinh
  */
-public class TicketsCategoriesDAO extends DBContext {
+public class TicketCategoriesDAO extends DBContext {
 
-    public TicketsCategoriesDAO() {
+    public TicketCategoriesDAO() {
         super();
     }
 
@@ -108,7 +108,7 @@ public class TicketsCategoriesDAO extends DBContext {
 
     // Test
     public static void main(String[] args) {
-        TicketsCategoriesDAO dao = new TicketsCategoriesDAO();
+        TicketCategoriesDAO dao = new TicketCategoriesDAO();
 
         // Test create
         dao.create("VIP", "VIP Tickets");

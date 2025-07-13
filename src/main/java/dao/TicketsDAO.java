@@ -41,7 +41,7 @@ public class TicketsDAO extends DBContext {
                 int quantity = rs.getInt("quantity");
                 String img = rs.getString("image_url");
                 int cateId = rs.getInt("category_id");
-                TicketsCategoriesDAO ticketDao = new TicketsCategoriesDAO();
+                TicketCategoriesDAO ticketDao = new TicketCategoriesDAO();
                 TicketCategories t = ticketDao.getTicketCategoryById(cateId);
                 Tickets ticket = new Tickets(tikId, e, name, price, quantity, img, t);
 
@@ -63,7 +63,7 @@ public class TicketsDAO extends DBContext {
                     Event e = new EventsDAO().getEventById(eventId);
 
                     int cateId = rs.getInt("category_id");
-                    TicketCategories t = new TicketsCategoriesDAO().getTicketCategoryById(cateId);
+                    TicketCategories t = new TicketCategoriesDAO().getTicketCategoryById(cateId);
                     return new Tickets(
                             rs.getInt("id"),
                             e,
@@ -149,7 +149,7 @@ public class TicketsDAO extends DBContext {
                 // Gọi lại các đối tượng liên quan
                 Event e = new EventsDAO().getEventById(eventId); // hoặc có thể truyền từ ngoài vào để đỡ tốn truy vấn
                 int cateId = rs.getInt("category_id");
-                TicketCategories t = new TicketsCategoriesDAO().getTicketCategoryById(cateId);
+                TicketCategories t = new TicketCategoriesDAO().getTicketCategoryById(cateId);
 
                 Tickets ticket = new Tickets(tikId, e, name, price, quantity, img, t);
                 list.add(ticket);
@@ -172,7 +172,7 @@ public class TicketsDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             EventsDAO eventDao = new EventsDAO();
-            TicketsCategoriesDAO cateDao = new TicketsCategoriesDAO();
+            TicketCategoriesDAO cateDao = new TicketCategoriesDAO();
 
             while (rs.next()) {
                 int id = rs.getInt("id");

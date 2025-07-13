@@ -4,10 +4,10 @@
  */
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import model.ManualPayment;
 import model.Order;
@@ -26,71 +26,38 @@ public class OrderDAO extends DBContext {
     }
 
     public List<Order> getAll() {
-        String sql = "Select * from orders";
+        String sql = "SELECT    orders.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         users INNER JOIN\n"
+                + "                      orders ON users.id = orders.user_id";
         List<Order> list = new ArrayList<>();
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            
-            OrderItemsDAO oItemDao = new OrderItemsDAO();
-            ManualPaymentDAO manualPaymentDAO = new ManualPaymentDAO();
-//            UserDAO uDao = new UserDAO();
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                
+                int totalAmount = rs.getInt("total_amount");
+                String status = rs.getString("status");
+                String bankTransferNote = rs.getString("bank_transfer_note");
+                Date createdAt = rs.getDate("created_at");
+
                 int userId = rs.getInt("user_id");
-//                User u = uDao.getUserById(userId);
-                
-                int totalAmount = rs.getInt("total_amount");
-                String status = rs.getString("status");
-                String bankTransferNote = rs.getString("bank_transfer_note");
-                Date createdAt = rs.getDate("created_at");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
 
-                List<OrderItem> listOI = oItemDao.getItemsByOrderId(id);
-                ManualPayment m = manualPaymentDAO.getManualPaymentByOrderId(id);
+                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
 
-//                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
-//                o.setItems(listOI);
-//                o.setManualPayment(m);
-//                list.add(o);
+                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
+
+                list.add(o);
+
             }
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return list;
-    }
-
-    public List<Order> getOrderByUserId(int userId) {
-        List<Order> list = new ArrayList<>();
-        String sql = "Select * from orders where user_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            OrderItemsDAO oItemDao = new OrderItemsDAO();
-            ManualPaymentDAO manualPaymentDAO = new ManualPaymentDAO();
-//            UserDAO uDao = new UserDAO();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-//                User u = uDao.getUserById(userId);
-                int totalAmount = rs.getInt("total_amount");
-                String status = rs.getString("status");
-                String bankTransferNote = rs.getString("bank_transfer_note");
-                Date createdAt = rs.getDate("created_at");
-
-                List<OrderItem> listOI = oItemDao.getItemsByOrderId(id);
-                ManualPayment m = manualPaymentDAO.getManualPaymentByOrderId(id);
-
-//                Order o = new Order(id, u, totalAmount, status, bankTransferNote, createdAt);
-//                o.setItems(listOI);
-//                o.setManualPayment(m);
-//
-//                list.add(o);
-            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -98,29 +65,92 @@ public class OrderDAO extends DBContext {
     }
 
     public Order getOrderById(int orderId) {
-        String sql = "Select * from orders where id = ?";
+        String sql = "SELECT    orders.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         users INNER JOIN\n"
+                + "                      orders ON users.id = orders.user_id where orders.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
+
             ResultSet rs = ps.executeQuery();
-            
-//            UserDAO uDao = new UserDAO();
 
             if (rs.next()) {
-                int userId = rs.getInt("user_id");
-//                User u = uDao.getUserById(userId);
                 int totalAmount = rs.getInt("total_amount");
                 String status = rs.getString("status");
                 String bankTransferNote = rs.getString("bank_transfer_note");
                 Date createdAt = rs.getDate("created_at");
 
-//                Order o = new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
-//                return o;
+                int userId = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
+
+                Order o = new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
+                return o;
             }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public List<OrderItem> loadOrderItemsByOrderId(int orderId) {
+        String sql = "SELECT * FROM order_items \n"
+                + "WHERE order_id = ?";
+
+        List<OrderItem> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String itemType = rs.getString("item_type");
+                int itemId = rs.getInt("item_id");
+                int quantity = rs.getInt("quantity");
+                int unitPrice = rs.getInt("unit_price");
+
+                OrderItem orderItem = new OrderItem(id, getOrderById(orderId), itemType, itemId, quantity, unitPrice);
+
+                list.add(orderItem);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
+    public List<ManualPayment> loadManualPaymentsByOrderId(int orderId) {
+        String sql = "SELECT * FROM manual_payments \n"
+                + "WHERE order_id = ?";
+
+        List<ManualPayment> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String content = rs.getString("transfer_content");
+                boolean confirmed = rs.getBoolean("confirmed_by_admin");
+                Date confirmedAt = rs.getDate("confirmed_at");
+
+                ManualPayment m = new ManualPayment(id, getOrderById(orderId), content, confirmed, confirmedAt);
+
+                list.add(m);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     public void create(int userId, int totalAmount, String bankTransferNote) {
@@ -183,14 +213,12 @@ public class OrderDAO extends DBContext {
 
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
-        for (Order o : dao.getAll()) {
-            List<OrderItem> list = o.getItems();
-            System.out.println(o.getId());
-            for (OrderItem orderItem : list) {
-                System.out.println(orderItem.getId() + " " + orderItem.getItemType());
-            }
+        List<ManualPayment> list = dao.loadManualPaymentsByOrderId(1);
+        for (ManualPayment m : list) {
+            System.out.println(m.getId());
+            System.out.println(m.getTransferContent());
+
         }
-        
 
     }
 }

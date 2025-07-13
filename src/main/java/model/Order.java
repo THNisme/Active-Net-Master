@@ -4,7 +4,7 @@
  */
 package model;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -31,7 +31,22 @@ public class Order {
         this.status = status;
         this.bankTransferNote = bankTransferNote;
         this.createAt = createAt;
+        this.items = null;
+        this.manualPayment = null;
     }
+
+    public Order(int id, User user, int totalAmount, String status, String bankTransferNote, Date createAt, List<OrderItem> items, ManualPayment manualPayment) {
+        this.id = id;
+        this.user = user;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.bankTransferNote = bankTransferNote;
+        this.createAt = createAt;
+        this.items = items;
+        this.manualPayment = manualPayment;
+    }
+    
+    
 
     public int getId() {
         return id;
