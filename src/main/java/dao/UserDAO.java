@@ -4,7 +4,6 @@
  */
 package dao;
 
-import java.security.MessageDigest;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,9 +11,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.IO;
+import model.ManualPayment;
 import model.Message;
-import model.Product;
-import model.ProductCategory;
+import model.Order;
+import model.OrderItem;
 import model.User;
 import utils.DBContext;
 
@@ -48,6 +48,8 @@ public class UserDAO extends DBContext {
                 Date createdAt = rs.getDate("created_at");
 
                 User u = new User(id, name, email_db, phone, pass_db, role, createdAt);
+                u.setMessages(loadMessageByUserId(id));
+                u.setOrders(loadOrderByUserId(id));
                 return u;
             }
         } catch (Exception e) {
@@ -201,7 +203,7 @@ public class UserDAO extends DBContext {
 
 //                UserDAO userDao = new UserDAO();
                 User userById = getUserById(userId);
-                
+
                 Message message = new Message(idDB, userById, content, readed, realeaseDate);
                 list.add(message);
             }
@@ -210,20 +212,140 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
-    
+
+    public List<Order> loadOrderByUserId(int userId) {
+        String sql = "SELECT orders.id, orders.user_id, orders.total_amount, orders.status, orders.bank_transfer_note, orders.created_at, manual_payments.id AS payment_id, manual_payments.transfer_content, manual_payments.confirmed_by_admin, manual_payments.confirmed_at \n"
+                + "FROM   orders INNER JOIN \n"
+                + "manual_payments ON orders.id = manual_payments.order_id \n"
+                + "WHERE user_id = ?";
+
+        List<Order> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int orderID = rs.getInt("id");
+                int userIDDB = rs.getInt("user_id");
+                long totalAmount = rs.getLong("total_amount");
+                String orderStatus = rs.getString("status");
+                String bankNote = rs.getString("bank_transfer_note");
+                Date orderCreateDate = rs.getDate("created_at");
+
+                int paymentID = rs.getInt("payment_id");
+                String transferContent = rs.getString("transfer_content");
+                boolean adminConfirmed = rs.getBoolean("confirmed_by_admin");
+                Date paymentConfirmedDate = rs.getDate("confirmed_at");
+
+                User u = getUserById(userIDDB);
+
+                List<OrderItem> oItemList = loadOrderItemsByOrderId(orderID);
+
+                Order oForP = getOrderById(orderID);
+
+                ManualPayment payment = new ManualPayment(paymentID, oForP, transferContent, adminConfirmed, paymentConfirmedDate);
+
+                Order o = new Order(orderID, u, totalAmount, orderStatus, bankNote, orderCreateDate, oItemList, payment);
+
+                list.add(o);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+//    RELATION FUNCTION
+    public List<OrderItem> loadOrderItemsByOrderId(int orderId) {
+        String sql = "SELECT * FROM order_items \n"
+                + "WHERE order_id = ?";
+
+        List<OrderItem> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String itemType = rs.getString("item_type");
+                int itemId = rs.getInt("item_id");
+                int quantity = rs.getInt("quantity");
+                int unitPrice = rs.getInt("unit_price");
+
+                OrderItem orderItem = new OrderItem(id, getOrderById(orderId), itemType, itemId, quantity, unitPrice);
+
+                list.add(orderItem);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
+    public Order getOrderById(int orderId) {
+        String sql = "SELECT    orders.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         users INNER JOIN\n"
+                + "                      orders ON users.id = orders.user_id where orders.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int totalAmount = rs.getInt("total_amount");
+                String status = rs.getString("status");
+                String bankTransferNote = rs.getString("bank_transfer_note");
+                Date createdAt = rs.getDate("created_at");
+
+                int userId = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
+
+                Order o = new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
+                return o;
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
-        
-        
-        List<Message> messList = dao.loadMessageByUserId(6);
 
-        for (Message m : messList) {
-            System.out.println(m.getContent());
+        User u = dao.login("a@example.com", "123456");
+
+//        System.out.println(u.getId());
+//        System.out.println(u.getName());
+//        System.out.println(u.getEmail());
+//        System.out.println(u.getPhone());
+//        System.out.println(u.getPasswordHash());
+//        System.out.println(u.getRole());
+//        System.out.println(u.getCreatedAt());
+
+        List<Order> orderList = u.getOrders();
+
+        for (Order m : orderList) {
+            System.out.println("OID: " + m.getId() + "");
+            System.out.println("UNAME :" + m.getUser().getName());
+            System.out.println("Tong: " + IO.formatCurrency(String.valueOf(m.getTotalAmount())));
+            System.out.println("Status: " + m.getStatus());
+            System.out.println("Bank note:" + m.getBankTransferNote());
+            System.out.println("Created: " + m.getCreateAt().toString());
+
             System.out.println("---------------");
         }
-        
-        
-        
+
 //        System.out.println(dao.login("admin@gmail.com", "123456").getId());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getName());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getEmail());
@@ -231,9 +353,7 @@ public class UserDAO extends DBContext {
 //        System.out.println(dao.login("admin@gmail.com", "123456").getPasswordHash());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getRole() + "");
 //        System.out.println(dao.login("admin@gmail.com", "123456").getCreatedAt());
-
 //        dao.delete(9);
-
 //        List<User> list = dao.getAll();
 //        for (User u : list) {
 //            System.out.println(u.getId());
@@ -246,9 +366,6 @@ public class UserDAO extends DBContext {
 //
 //            System.out.println("-----------------");
 //        }
-
-        
-
 //        User u = dao.getUserById(7);
 //
 //        System.out.println(u.getId());

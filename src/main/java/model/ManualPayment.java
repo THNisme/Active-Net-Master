@@ -17,6 +17,9 @@ public class ManualPayment {
     private boolean confirmedByAdmin;
     private Date confirmedAt;
 
+    public ManualPayment() {
+    }
+
     public ManualPayment(int id, Order order, String transferContent, boolean confirmedByAdmin, Date confirmedAt) {
         this.id = id;
         this.order = order;
@@ -24,6 +27,8 @@ public class ManualPayment {
         this.confirmedByAdmin = confirmedByAdmin;
         this.confirmedAt = confirmedAt;
     }
+    
+    
 
     public int getId() {
         return id;

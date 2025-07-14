@@ -14,7 +14,7 @@ import java.util.List;
 public class Order {
     private int id;
     private User user;
-    private int totalAmount;
+    private long totalAmount;
     private String status;
     private String bankTransferNote;
     private Date createAt;
@@ -24,7 +24,7 @@ public class Order {
     public Order() {
     }
     
-    public Order(int id, User user, int totalAmount, String status, String bankTransferNote, Date createAt) {
+    public Order(int id, User user, long totalAmount, String status, String bankTransferNote, Date createAt) {
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;
@@ -35,7 +35,7 @@ public class Order {
         this.manualPayment = null;
     }
 
-    public Order(int id, User user, int totalAmount, String status, String bankTransferNote, Date createAt, List<OrderItem> items, ManualPayment manualPayment) {
+    public Order(int id, User user, long totalAmount, String status, String bankTransferNote, Date createAt, List<OrderItem> items, ManualPayment manualPayment) {
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;
@@ -64,7 +64,7 @@ public class Order {
         this.user = user;
     }
 
-    public int getTotalAmount() {
+    public long getTotalAmount() {
         return totalAmount;
     }
 
