@@ -25,6 +25,7 @@ public class User {
     private List<Message> messages;
 
     public User() {
+        this.id = -1;
     }
 
     public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, List<Cart> carts, List<Order> orders, List<Message> messages) {
