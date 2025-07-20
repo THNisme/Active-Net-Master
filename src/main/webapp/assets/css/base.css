@@ -27,6 +27,7 @@
 
 .section-heading-pink {
     color: var(--pink-primary);
+    font-family: var(--primary-font);
 }
 
 .primary-btn {
