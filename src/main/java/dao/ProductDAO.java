@@ -14,7 +14,7 @@ import utils.DBContext;
 
 /**
  *
- * @author Tran Hieu Nghia - CE191115
+ * @author Lê Hữu Tính
  */
 public class ProductDAO extends DBContext {
 
@@ -23,21 +23,49 @@ public class ProductDAO extends DBContext {
     }
 
     public List<Product> getAll() {
-        String sql = "SELECT   products.*, product_categories.name AS category_name, product_categories.description AS category_des \n"
-                + "FROM     products INNER JOIN product_categories ON products.category_id = product_categories.id";
         List<Product> list = new ArrayList<>();
-
+        String sql = "SELECT p.*, pc.name AS category_name, pc.description AS category_des "
+                + "FROM products p "
+                + "LEFT JOIN product_categories pc ON p.category_id = pc.id";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 int catId = rs.getInt("category_id");
                 String catName = rs.getString("category_name");
                 String catDes = rs.getString("category_des");
-
                 ProductCategory cate = new ProductCategory(catId, catName, catDes);
 
+                int proId = rs.getInt("id");
+                String proName = rs.getString("name");
+                String proDes = rs.getString("description");
+                long proPrice = rs.getLong("price");
+                int proQuan = rs.getInt("stock");
+                String proImgUrl = rs.getString("image_url");
+
+                list.add(new Product(proId, proName, proDes, proPrice, proQuan, proImgUrl, cate));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    return list;
+    }
+
+    public List<Product> getByCategory(int categoryId) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT products.*, product_categories.name AS category_name, product_categories.description AS category_des "
+                + "FROM products "
+                + "INNER JOIN product_categories ON products.category_id = product_categories.id "
+                + "WHERE products.category_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int catId = rs.getInt("category_id");
+                String catName = rs.getString("category_name");
+                String catDes = rs.getString("category_des");
+                ProductCategory cate = new ProductCategory(catId, catName, catDes);
                 int proId = rs.getInt("id");
                 String proName = rs.getString("name");
                 String proDes = rs.getString("description");
@@ -52,16 +80,13 @@ public class ProductDAO extends DBContext {
         }
         return list;
     }
+    
 
     public void create(String pName, String pDes, long pPrice, int pQuantity, String pImgUrl, int cateID) {
         String sql = "INSERT INTO [dbo].[products] ([name],[description],[price],[stock],[image_url],[category_id]) \n"
                 + "VALUES(?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-
-//            int nextId = getNextId();
-//            
-//            ps.setInt(1, nextId);
             ps.setString(1, pName);
             ps.setString(2, pDes);
             ps.setLong(3, pPrice);
@@ -75,60 +100,44 @@ public class ProductDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-
-    public Product getProductById(int id) {
-        String sql = "SELECT   products.*, product_categories.name AS category_name, product_categories.description AS category_des \n"
-                + "FROM     products INNER JOIN product_categories ON products.category_id = product_categories.id \n"
-                + "Where [products].[id] = ?";
+    public List<Product> searchByName(String keyword) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT p.*, c.name as category_name, c.description as category_des "
+                + "FROM products p JOIN product_categories c ON p.category_id = c.id "
+                + "WHERE p.name LIKE ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-
+            ps.setString(1, "%" + keyword + "%");
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                int catId = rs.getInt("category_id");
-                String catName = rs.getString("category_name");
-                String catDes = rs.getString("category_des");
-
-                ProductCategory cate = new ProductCategory(catId, catName, catDes);
-
-                int proId = rs.getInt("id");
-                String proName = rs.getString("name");
-                String proDes = rs.getString("description");
-                long proPrice = rs.getLong("price");
-                int proQuan = rs.getInt("stock");
-                String proImgUrl = rs.getString("image_url");
-
-                return new Product(proId, proName, proDes, proPrice, proQuan, proImgUrl, cate);
+            while (rs.next()) {
+                ProductCategory cate = new ProductCategory(
+                        rs.getInt("category_id"),
+                        rs.getString("category_name"),
+                        rs.getString("category_des")
+                );
+                Product p = new Product(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getLong("price"),
+                        rs.getInt("stock"),
+                        rs.getString("image_url"),
+                        cate
+                );
+                list.add(p);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        return null;
+        return list;
     }
-
-//    private int getNextId() {
-//        String sql = "SELECT MAX(id) AS maxID FROM product";
-//        try {
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                return rs.getInt("maxID") + 1;
-//            } else {
-//                return 1;
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return -1;
-//    }
     
     public void update(int pID, String pName, String pDes, long pPrice, int pQuantity, String pImgUrl, int cateID) {
         String sql = "UPDATE [dbo].[products] SET [name] = ?, [description] = ?, [price] = ?, [stock] = ?, [image_url] = ?, [category_id] = ?\n"
                 + "WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setString(1, pName);
             ps.setString(2, pDes);
             ps.setLong(3, pPrice);
@@ -136,9 +145,7 @@ public class ProductDAO extends DBContext {
             ps.setString(5, pImgUrl);
             ps.setInt(6, cateID);
             ps.setInt(7, pID);
-
             ps.executeUpdate();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -150,30 +157,10 @@ public class ProductDAO extends DBContext {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
-    public static void main(String[] args) {
-        ProductDAO dao = new ProductDAO();
-
-        dao.update(1, "Iphone", "Apple", 12000000, 10, "images/iphone", 2);
-        
-        List<Product> list = dao.getAll();
-
-        for (Product p : list) {
-            System.out.println(p.getId());
-            System.out.println(p.getName());
-            System.out.println(p.getDescription());
-            System.out.println(p.getPrice());
-            System.out.println(p.getStock());
-            System.out.println(p.getImageUrl());
-            System.out.println(p.getCategory().getName());
-            System.out.println("");
-        }
-
-    }
+    
 
 }

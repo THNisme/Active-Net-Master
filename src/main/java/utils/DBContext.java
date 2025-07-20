@@ -29,7 +29,7 @@ public class DBContext {
                     + "password=123456;"
                     + "encrypt=true;trustServerCertificate=true;";
 
-//          dbURL của Tính
+         // dbURL của Tính
 //            String dbURL = "jdbc:sqlserver://localhost:1433;"
 //                    + "databaseName=Active_Net_Master;"
 //                    + "user=sa;"
