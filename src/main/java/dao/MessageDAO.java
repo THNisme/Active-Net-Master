@@ -162,22 +162,23 @@ public class MessageDAO extends DBContext {
     }
     
     public static void main(String[] args) {
-//        MessageDAO dao = new MessageDAO();
+        MessageDAO dao = new MessageDAO();
 //        dao.delete(7);
 //        
 //        dao.checkReaded(1, true);
 ////        
-//        List<Message> list = new ArrayList<>();
-//
-//        list = dao.getAll();
-//
-//        for (Message m : list) {
-//            System.out.println(m.getId());
-//            System.out.println(m.getUser().getEmail());
-//            System.out.println(m.getContent());
-//            System.out.println(m.getReleaseDate().toString() + "");
-//            System.out.println("----------------------");
-//        }
+        List<Message> list = new ArrayList<>();
+
+        list = dao.getAll();
+
+        for (Message m : list) {
+            System.out.println(m.getId());
+            System.out.println(m.getUser().getEmail());
+            System.out.println(m.getContent());
+            System.out.println(m.isReaded());
+            System.out.println(m.getReleaseDate().toString() + "");
+            System.out.println("----------------------");
+        }
 
 //        Message m = dao.getMessageById(1);
 //        

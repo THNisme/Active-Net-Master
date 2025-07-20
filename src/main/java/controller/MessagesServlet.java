@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UserDAO;
+import dao.MessageDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,15 +14,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.IO;
-import model.User;
+import model.Message;
 
 /**
  *
  * @author BACH YEN
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "MessagesServlet", urlPatterns = {"/messages"})
+public class MessagesServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +40,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet MessagesServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet MessagesServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +61,26 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") != null) {
+
+            String view = request.getParameter("view");
+
+            if (view == null) {
+                view = "list";
+            }
+
+            if (view.equalsIgnoreCase("list")) {
+                MessageDAO mesDao = new MessageDAO();
+                List<Message> mesList = mesDao.getAll();
+                request.setAttribute("mesList", mesList);
+                request.getRequestDispatcher("message.jsp").forward(request, response);
+            }
+
+        } else {
+            response.sendRedirect("login");
+        }
     }
 
     /**
@@ -76,33 +94,18 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String user = request.getParameter("user");
-        String pass = request.getParameter("pass");
+         String view = request.getParameter("view");
 
-        UserDAO dao = new UserDAO();
-        User u = dao.login(user, pass);
-
-        if (u.getId() != -1) {
-            if (u.getRole() == 1) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", u);
-                response.sendRedirect("dashboard");
-            } else {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", u);
-                response.sendRedirect("home.html");
-            }
-
-        } else {
-//            List<String> errorList = IO.userLoginValidator(user, pass);
-//            request.setAttribute("errorList", errorList);
-//            request.getRequestDispatcher("login").forward(request, response);
-
-            HttpSession session = request.getSession();
-            session.setAttribute("err", "Email or password is incorrect !");
-            response.sendRedirect("login");
+        if (view == null) {
+            view = "edit";
         }
-
+        
+        if (view.equalsIgnoreCase("edit")) {
+            String id = request.getParameter("idEdit");
+        }
+        
+        
+        
 
     }
 

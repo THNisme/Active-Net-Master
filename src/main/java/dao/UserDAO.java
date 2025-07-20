@@ -330,7 +330,7 @@ public class UserDAO extends DBContext {
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
 
-        User u = dao.login("a@example.com", "12345");
+        User u = dao.login("admin@gmail.com", "123456");
 
         System.out.println(u.getId());
         System.out.println(u.getName());

@@ -4,6 +4,9 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="model.User"%>
+<%@page import="model.Message"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +53,9 @@
                 <div class="dashboard-nav-wrapper">
                     <img src="./assets/img/logo/fac/LogoA-trans.png" alt="">
                     <a class="navbar-brand dashboard-nav-brand" href="#">
-                        Welcome, [user.name]
+                        Welcome, <%User u = (User) session.getAttribute("user");
+                            out.println(u.getName());
+                        %>
                     </a>
                 </div>
                 <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="offcanvasNavbar"
@@ -119,11 +124,11 @@
                                     Người dùng
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="users">Quản lý người dùng</a></li>
+                                    <li><a class="dropdown-item" href="dashboard?view=users">Quản lý người dùng</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="messages">Tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="dashboard?view=messages">Tin nhắn</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -135,7 +140,7 @@
         </nav>
 
         <section class="dashboard-content container">
-            <h1 class="section-heading">Quản lý <span class="section-heading-pink">Đơn hàng</span></h1>
+            <h1 class="section-heading">Quản lý <span class="section-heading-pink">Tin nhắn</span></h1>
 
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle">
@@ -143,70 +148,43 @@
                         <tr class="table-dark text-center">
                             <th scope="col">ID</th>
                             <th scope="col">Email khách hàng</th>
-                            <th scope="col">Tổng tiền</th>
+                            <th scope="col">Nội dung tin nhắn</th>
                             <th scope="col">Trạng thái</th>
-                            <th scope="col">Nội dung chuyển khoản</th>
-                            <th scope="col">Ngày đặt</th>
+                            <th scope="col">Ngày gửi</th>
                             <th scope="col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
+                        <%
+                            List<Message> mesList = (List<Message>) request.getAttribute("mesList");
+                            if (request.getAttribute("mesList") != null) {
+                                for (Message m : mesList) {
+
+                        %>
                         <tr>
-                            <th scope="row" class="text-center">1</th>
-                            <td>Mark@gmail.com</td>
-                            <td>120.000</td>
-                            <td>Chưa xử lý</td>
-                            <td>0201</td>
-                            <td>14-7-2025</td>
+                            <th scope="row" class="text-center"><%=m.getId()%></th>
+                            <td><%=m.getUser().getEmail()%></td>
+                            <td><%=m.getContent()%></td>
+                            <td><%
+                                if (m.isReaded()) {
+                                    out.println("<p>" + "Đã đọc" + "</p>");
+                                } else {
+                                    out.println("<p>" + "Chưa đọc" + "</p>");
+                                }
+                                %></td>
+                            <td><%=m.getReleaseDate()%></td>
                             <td>
                                 <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
+                                    <a onclick="fnEdit('<%=m.getId()%>', '<%=m.getUser().getEmail()%>', '<%=m.getContent()%>', '<%=m.isReaded()%>', '<%=m.getReleaseDate()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
+                                    <a href="dashboard?view=delete&id=<%=m.getId()%>" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <th scope="row" class="text-center">2</th>
-                            <td>lisa99@yahoo.com</td>
-                            <td>85.000</td>
-                            <td>Đang giao</td>
-                            <td>0387</td>
-                            <td>13-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-center">3</th>
-                            <td>john.doe@outlook.com</td>
-                            <td>230.000</td>
-                            <td>Chưa xử lý</td>
-                            <td>0412</td>
-                            <td>12-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-center">4</th>
-                            <td>anna.pham@gmail.com</td>
-                            <td>175.000</td>
-                            <td>Đã hoàn thành</td>
-                            <td>0579</td>
-                            <td>11-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                        <%}
+                            } else {
+                                out.println("<p>" + "Không có tin nhắn nào" + "</p>");
+                            }
+                        %>
 
                     </tbody>
                 </table>
@@ -220,103 +198,108 @@
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form class="form-control">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create new</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo tin nhắn mới</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <p>Chức năng chỉ áp dụng cho vai trò khách hàng !</p>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Email address</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                                <label for="floatingPassword">Password</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Create</button>
-                        </div>
-                    </form>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
                 </div>
             </div>
         </div>
 
+        <!-- Modal Edit -->
+        <div class="modal fade mt-5 " id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" style="min-width: 1200px">
 
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img src="./assets/img/logo/fac/LogoA-trans.png" alt="F-Active Logo" class="footer-logo-img">
-                        <p class="footer-text">
-                            Active Net một dự án cộng tác từ Câu lạc bộ sự kiện F-Active cùng HiFive Team
-                        </p>
-                        <ul class="footer-social-link-list">
-                            <a href="" class="footer-social-link-item">
-                                <li class="footer-social-list-item">
-                                    <i class="bi bi-facebook"></i>
-                                </li>
-                            </a>
-                            <a href="" class="footer-social-link-item">
-                                <li class="footer-social-list-item">
-                                    <i class="bi bi-youtube"></i>
-                                </li>
-                            </a>
-                            <a href="" class="footer-social-link-item">
-                                <li class="footer-social-list-item">
-                                    <i class="bi bi-tiktok"></i>
-                                </li>
-                            </a>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 footer-col">
-                        <div class="footer-content">
-                            <h4 class="footer-heading">
-                                Active Net
-                            </h4>
-                            <ul class="footer-link-list">
-                                <a href="" class="footer-item-link">
-                                    <li class="footer-link-list-item">Trang chủ</li>
-                                </a>
-                                <a href="" class="footer-item-link">
-                                    <li class="footer-link-list-item">Giới thiệu</li>
-                                </a>
-                                <a href="" class="footer-item-link">
-                                    <li class="footer-link-list-item">Cửa hàng</li>
-                                </a>
-                                <a href="" class="footer-item-link">
-                                    <li class="footer-link-list-item">Liên hệ</li>
-                                </a>
-                                <a href="" class="footer-item-link">
-                                    <li class="footer-link-list-item">Đăng nhập</li>
-                                </a>
-                            </ul>
+                <form action="messages" method="post">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Chỉnh sửa</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3 row">
+                                <label for="idEdit" class="col-sm-2 col-form-label fw-medium">ID:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="idEdit" name="idEdit">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="userEmailEdit" class="col-sm-2 col-form-label fw-medium">Gửi từ:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="userEmailEdit" name="userEmailEdit">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="contentDisplay" class="col-sm-2 col-form-label fw-medium">Nội dung:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="contentEdit" name="contentEdit"> 
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="statusEdit" class="col-sm-2 col-form-label fw-medium">Trạng thái:</label>
+                                <div class="col-sm-10">
+                                    <select name="statusEdit" id="statusEdit" class="form-select">
+                                        <option value="0">Chưa đọc</option>
+                                        <option value="1">Đã đọc</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="dateEdit" class="col-sm-2 col-form-label fw-medium">Ngày gửi:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="dateEdit" name="dateEdit">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Thay đổi</button>
                         </div>
 
                     </div>
-                    <div class="col-md-4 footer-col">
-                        <div class="footer-content">
-                            <h4 class="footer-heading">
-                                Get In Touch
-                            </h4>
-                            <ul class="footer-link-list">
-                                <a href="mailto: clbfactive1420@gmail.com" class="footer-item-link">
-                                    <li class="footer-link-list-item">clbfactive1420@gmail.com</li>
-                                </a>
-                                <a href="tel:0704906670" class="footer-item-link">
-                                    <li class="footer-link-list-item">070 490 6670</li>
-                                </a>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <p class="footer-copyright">Copyright © 2025 Hifive Team | All Rights Deserved @hifiveteam</p>
-                </div>
+                </form>
+
             </div>
-        </footer>
+        </div>
+
+        <script>
+            function fnEdit(id, userEmail, content, status, date) {
+                document.getElementById("idEdit").value = id;
+                document.getElementById("userEmailEdit").value = userEmail;
+                document.getElementById("contentEdit").value = content;
+
+                if (status) {
+                    document.getElementById("statusEdit").value = "1";
+                } else {
+                   document.getElementById("statusEdit").value = "0"; 
+                }
+
+
+                document.getElementById("dateEdit").value = date;
+            }
+        </script>
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
