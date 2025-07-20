@@ -29,6 +29,7 @@ public class UserDAO extends DBContext {
     }
 
     public User login(String email, String pass) {
+        User u = new User();
 
         String sql = "select * from users where email = ? and password_hash = ? ";
         try {
@@ -47,15 +48,21 @@ public class UserDAO extends DBContext {
                 int role = rs.getInt("role");
                 Date createdAt = rs.getDate("created_at");
 
-                User u = new User(id, name, email_db, phone, pass_db, role, createdAt);
+                u.setId(id);
+                u.setName(name);
+                u.setEmail(email_db);
+                u.setPhone(phone);
+                u.setPasswordHash(pass_db);
+                u.setRole(role);
+                u.setCreatedAt(createdAt);
+//                User u = new User(id, name, email_db, phone, pass_db, role, createdAt);
                 u.setMessages(loadMessageByUserId(id));
                 u.setOrders(loadOrderByUserId(id));
-                return u;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return u;
     }
 
     public List<User> getAll() {
@@ -323,29 +330,28 @@ public class UserDAO extends DBContext {
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
 
-        User u = dao.login("a@example.com", "123456");
+        User u = dao.login("a@example.com", "12345");
 
-//        System.out.println(u.getId());
-//        System.out.println(u.getName());
-//        System.out.println(u.getEmail());
-//        System.out.println(u.getPhone());
-//        System.out.println(u.getPasswordHash());
-//        System.out.println(u.getRole());
-//        System.out.println(u.getCreatedAt());
+        System.out.println(u.getId());
+        System.out.println(u.getName());
+        System.out.println(u.getEmail());
+        System.out.println(u.getPhone());
+        System.out.println(u.getPasswordHash());
+        System.out.println(u.getRole());
+        System.out.println(u.getCreatedAt());
 
-        List<Order> orderList = u.getOrders();
-
-        for (Order m : orderList) {
-            System.out.println("OID: " + m.getId() + "");
-            System.out.println("UNAME :" + m.getUser().getName());
-            System.out.println("Tong: " + IO.formatCurrency(String.valueOf(m.getTotalAmount())));
-            System.out.println("Status: " + m.getStatus());
-            System.out.println("Bank note:" + m.getBankTransferNote());
-            System.out.println("Created: " + m.getCreateAt().toString());
-
-            System.out.println("---------------");
-        }
-
+//        List<Order> orderList = u.getOrders();
+//
+//        for (Order m : orderList) {
+//            System.out.println("OID: " + m.getId() + "");
+//            System.out.println("UNAME :" + m.getUser().getName());
+//            System.out.println("Tong: " + IO.formatCurrency(String.valueOf(m.getTotalAmount())));
+//            System.out.println("Status: " + m.getStatus());
+//            System.out.println("Bank note:" + m.getBankTransferNote());
+//            System.out.println("Created: " + m.getCreateAt().toString());
+//
+//            System.out.println("---------------");
+//        }
 //        System.out.println(dao.login("admin@gmail.com", "123456").getId());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getName());
 //        System.out.println(dao.login("admin@gmail.com", "123456").getEmail());
