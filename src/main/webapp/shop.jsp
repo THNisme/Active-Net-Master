@@ -69,6 +69,8 @@
                         %>
                         <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                         <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="cart" class="btn primary-btn btn-nav-login active"><i class="bi bi-bag"></i></a>
+                        
                             <%                        }
                             %>
                     </div>
@@ -189,11 +191,15 @@
                             %>
                             <div class="col-md-4 mb-4 d-flex">
                                 <div class="ticket-wrapper">
-                                    <img src="<%= request.getContextPath() + "/" + p.getImageUrl()%>" class="li-img" alt="...">
-                                    <p class="ticket-name"><%= p.getName()%></p>
+                                    <a href="single?id=<%=p.getId()%>">
+                                        <img src="<%= request.getContextPath() + "/" + p.getImageUrl()%>" class="li-img" alt="...">
+                                    </a>
+                                    <a href="single?id=<%=p.getId()%>">
+                                        <p class="ticket-name"><%= p.getName()%></p>
+                                    </a>
                                     <p class="ticket-time"></p>
                                     <p class="price"><%= String.format("%,d", p.getPrice())%> VND</p>
-                                    <a href="single?id=${product.id}&type=product" class="btn primary-btn buy">
+                                    <a href="" class="btn primary-btn buy">
                                         <i class="bi bi-bag"></i>
                                     </a>
                                 </div>

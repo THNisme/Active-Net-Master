@@ -1,3 +1,4 @@
+<%@page import="model.User"%>
 <%@ page import="model.Ticket" %>
 <%@ page import="model.Event" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
@@ -32,32 +33,41 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-3">
-                        <a class="nav-logo-link" href="#">
+                        <a class="nav-logo-link" href="">
                             <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
                         </a>
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home.html" class="nav-item-link">
+                            <a href="home" class="nav-item-link">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.html" class="nav-item-link">
+                            <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="shop.html" class="nav-item-link">
+                            <a href="product" class="nav-item-link active">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
-                            <a href="contact.html" class="nav-item-link">
+                            <a href="contact" class="nav-item-link">
                                 <li class="nav-list-item">Liên hệ</li>
                             </a>
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
-                        <a href="#" class="btn primary-btn btn-nav-login"><i class="bi bi-person-circle"></i></a>
+                        <%
+                            User d = (User) session.getAttribute("user");
+                            if (d == null) {
+
+                        %>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <%                        } else {
+                        %>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                            <%                        }
+                            %>
                     </div>
                 </div>
-            </div>
         </nav>
 
         <!-- SỰ KIỆN -->
@@ -92,14 +102,11 @@
                             <p><strong>Số lượng còn:</strong> <%= ticket.getQuantity()%> vé</p>
                             <p><strong>Giá:</strong> <span class="ct-price"><%= ticket.getPrice()%> VND/vé</span></p>
                         </div>
-                        <form action="single-product" method="POST">
-                            <input type="hidden" name="ticketId" value="<%= ticket.getId()%>">
-                            <label for="quantity">Số lượng:</label>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= ticket.getQuantity()%>">
-                            <button type="submit" class="btn primary-btn ct-sell">
-                                <i class="bi bi-bag"></i> Thêm
-                            </button>
-                        </form>
+                        <a href="" class="btn primary-btn ct-sell">
+                            <i class="bi bi-bag"></i> Thêm
+                        </a>
+                        
+                        
                         <% } else { %>
                         <p>Thông tin vé hoặc sự kiện không có sẵn.</p>
                         <% }%>

@@ -67,31 +67,34 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login");
-            return;
-        }
-        User user = (User) session.getAttribute("user");
-        int userId = user.getId();
-
-        UserDAO userDAO = new UserDAO();
-        Cart cart = userDAO.loadCartByUserId(userId);
-
-        if (cart == null) {
-            response.getWriter().println("Không có giỏ hàng cho user ID: " + userId);
-            return;
-        }
-
-        List<CartItem> items = userDAO.getItemsByCartId(cart.getId());
-
-        // BankTransferNote = cartId_username
-        String bankTransferNote = "Cart" + cart.getId() + "_" + user.getName();
-
-        request.setAttribute("cart", cart);
-        request.setAttribute("items", items);
-        request.setAttribute("bankTransferNote", bankTransferNote); // Truyền sang JSP
         request.getRequestDispatcher("cart.jsp").forward(request, response);
+        
+        
+//        HttpSession session = request.getSession(false);
+//        if (session == null || session.getAttribute("user") == null) {
+//            response.sendRedirect("login");
+//            return;
+//        }
+//        User user = (User) session.getAttribute("user");
+//        int userId = user.getId();
+//
+//        UserDAO userDAO = new UserDAO();
+//        Cart cart = userDAO.loadCartByUserId(userId);
+//
+//        if (cart == null) {
+//            response.getWriter().println("Không có giỏ hàng cho user ID: " + userId);
+//            return;
+//        }
+//
+//        List<CartItem> items = userDAO.getItemsByCartId(cart.getId());
+//
+//        // BankTransferNote = cartId_username
+//        String bankTransferNote = "Cart" + cart.getId() + "_" + user.getName();
+//
+//        request.setAttribute("cart", cart);
+//        request.setAttribute("items", items);
+//        request.setAttribute("bankTransferNote", bankTransferNote); // Truyền sang JSP
+//        request.getRequestDispatcher("cart.jsp").forward(request, response);
 
     }
 
