@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.MessageDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,13 +13,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Message;
+import model.User;
 
 /**
  *
- * @author Admin
+ * @author BACH YEN
  */
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "UsersServlet", urlPatterns = {"/users"})
+public class UsersServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +42,10 @@ public class RegisterServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");
+            out.println("<title>Servlet UsersServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UsersServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,7 +63,31 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("register.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("user") != null) {
+
+            String view = request.getParameter("view");
+
+            if (view == null) {
+                view = "list";
+            }
+
+            if (view.equalsIgnoreCase("list")) {
+                UserDAO userDao = new UserDAO();
+                List<User> userList = userDao.getAll();
+                request.setAttribute("userList", userList);
+                request.getRequestDispatcher("users.jsp").forward(request, response);
+            } else if (view.equalsIgnoreCase("inbox")) {
+                MessageDAO mesDao = new MessageDAO();
+                List<Message> mesList = mesDao.getAllUnreaded();
+                request.setAttribute("mesList", mesList);
+                request.getRequestDispatcher("message.jsp").forward(request, response);
+            }
+
+        } else {
+            response.sendRedirect("login");
+        }
     }
 
     /**
@@ -72,17 +101,30 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String name = request.getParameter("username");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String password = request.getParameter("password");
-        int role = 0;
-        
-        UserDAO userDAO = new UserDAO();
-        userDAO.create(name, email, phone, password, role);
-        
-        request.setAttribute("notify", "Tạo thành công");
-        request.getRequestDispatcher("register.jsp").forward(request, response);
+        String view = request.getParameter("view");
+
+        if (view == null) {
+            view = "edit";
+        }
+
+        if (view.equalsIgnoreCase("edit")) {
+            int id = Integer.parseInt(request.getParameter("idEdit"));
+            int statusInt = Integer.parseInt(request.getParameter("statusEdit"));
+            boolean status = false;
+
+            if (statusInt == 1) {
+                status = true;
+            }
+
+            MessageDAO mesDao = new MessageDAO();
+            mesDao.checkReaded(id, status);
+            response.sendRedirect("messages");
+        } else if (view.equalsIgnoreCase("delete")) {
+            int id = Integer.parseInt(request.getParameter("idDelete"));
+            UserDAO userDao = new UserDAO();
+            userDao.delete(id);
+            response.sendRedirect("users");
+        }
     }
 
     /**
