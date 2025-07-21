@@ -1,10 +1,10 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.User;
 
 /**
  *
  * @author BACH YEN
  */
-@WebServlet(name = "UserProfileServlet", urlPatterns = {"/profile"})
-public class UserProfileServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/about"})
+public class AboutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +37,10 @@ public class UserProfileServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserProfileServlet</title>");
+            out.println("<title>Servlet AboutServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserProfileServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AboutServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,16 +58,7 @@ public class UserProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        User u = (User) session.getAttribute("user");
-
-//      LOGIN SUCCESS
-        if (session.getAttribute("user") != null) {
-            request.getRequestDispatcher("user.jsp").forward(request, response);
-        } else {
-            response.sendRedirect("login");
-        }
+        request.getRequestDispatcher("about.jsp").forward(request, response);
     }
 
     /**
@@ -83,30 +72,7 @@ public class UserProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String view = request.getParameter("view");
-
-        if (view == null) {
-            view = "edit";
-        }
-
-        if (view.equalsIgnoreCase("edit")) {
-            int id = Integer.parseInt(request.getParameter("inputUID"));
-            String name = request.getParameter("inputUserName");
-            String email = request.getParameter("inputEmail");
-            String pass = request.getParameter("inputPassword");
-            String phone = request.getParameter("inputPhone");
-
-            UserDAO userDao = new UserDAO();
-            userDao.updateProfile(id, name, email, phone, pass);
-
-//          UPDATE SESSION
-            UserDAO dao = new UserDAO();
-            User u = dao.getUserById(id);
-            HttpSession session = request.getSession();
-            session.setAttribute("user", u);
-
-            response.sendRedirect("profile");
-        }
+        processRequest(request, response);
     }
 
     /**

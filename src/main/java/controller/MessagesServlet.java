@@ -126,6 +126,16 @@ public class MessagesServlet extends HttpServlet {
             MessageDAO mesDao = new MessageDAO();
             mesDao.delete(id);
             response.sendRedirect("messages");
+        } else if (view.equalsIgnoreCase("add")) {
+            String messContent = request.getParameter("messageInput");
+
+            HttpSession session = request.getSession();
+            User u = (User) session.getAttribute("user");
+
+            MessageDAO dao = new MessageDAO();
+            dao.create(u.getId(), messContent);
+            response.sendRedirect("contact.jsp");
+
         }
 
     }

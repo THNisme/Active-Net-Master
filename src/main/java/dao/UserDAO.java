@@ -107,6 +107,7 @@ public class UserDAO extends DBContext {
             //            int nextId = getNextId();
 //            
 //            ps.setInt(1, nextId);
+
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, phone);

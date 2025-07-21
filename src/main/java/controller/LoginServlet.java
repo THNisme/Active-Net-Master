@@ -94,16 +94,13 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("home");
             }
 
-            
         } else {
             List<String> errorList = IO.userLoginValidator(user, pass);
-            
 
             HttpSession session = request.getSession();
             session.setAttribute("errorList", errorList);
             response.sendRedirect("login");
         }
-
 
     }
 
