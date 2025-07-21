@@ -78,11 +78,6 @@ public class UsersServlet extends HttpServlet {
                 List<User> userList = userDao.getAll();
                 request.setAttribute("userList", userList);
                 request.getRequestDispatcher("users.jsp").forward(request, response);
-            } else if (view.equalsIgnoreCase("inbox")) {
-                MessageDAO mesDao = new MessageDAO();
-                List<Message> mesList = mesDao.getAllUnreaded();
-                request.setAttribute("mesList", mesList);
-                request.getRequestDispatcher("message.jsp").forward(request, response);
             }
 
         } else {
@@ -121,8 +116,9 @@ public class UsersServlet extends HttpServlet {
             response.sendRedirect("users");
         } else if (view.equalsIgnoreCase("delete")) {
             int id = Integer.parseInt(request.getParameter("idDelete"));
+            
             UserDAO userDao = new UserDAO();
-            userDao.delete(id);
+            userDao.deleteAllData(id);
             response.sendRedirect("users");
         }
     }

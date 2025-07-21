@@ -323,10 +323,11 @@
                     <div class="modal-body">
 
                         <div class="mb-3 row">
-                            <label for="dateEdit" class="col-sm-6 col-form-label">Bạn có chắc chắn xóa tài khoản </label>
-                            <div class="col-sm-6">
-                                <input type="text" readonly class="form-control-plaintext fw-medium" id="idDelete" name="idDelete"> 
+                            <label for="dateEdit" class="col-sm-7 col-form-label">Bạn có chắc chắn xóa tài khoản có ID </label>
+                            <div class="col-sm-5">
+                                <input type="text" readonly class="form-control-plaintext fw-bold text-success" id="idDelete" name="idDelete"> 
                             </div>
+                            <p class="text-center mt-5"><span class="fw-bold text-danger">Lưu ý:</span> Thao tác sẽ xóa tất cả các dữ liệu khác (tin nhắn, giỏ hàng,..) liên quan đến tài khoản này !</p>
                         </div>
                     </div>
 
@@ -334,30 +335,31 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-danger">Xóa</button>
                     </div>
+                </div>
             </form>
+
         </div>
     </div>
-</div>
 
-<script>
-    function fnEdit(id, name, email, phone, role, date) {
-        document.getElementById("idEdit").value = id;
-        document.getElementById("userNameEdit").value = name;
-        document.getElementById("emailEdit").value = email;
-        document.getElementById("phoneEdit").value = phone;
-        document.getElementById("roleEdit").value = role;
-        document.getElementById("dateEdit").value = date;
-    }
+    <script>
+        function fnEdit(id, name, email, phone, role, date) {
+            document.getElementById("idEdit").value = id;
+            document.getElementById("userNameEdit").value = name;
+            document.getElementById("emailEdit").value = email;
+            document.getElementById("phoneEdit").value = phone;
+            document.getElementById("roleEdit").value = role;
+            document.getElementById("dateEdit").value = date;
+        }
 
-    function fnDelete(id) {
-        document.getElementById("idDelete").value = id;
-    }
-</script>
+        function fnDelete(id) {
+            document.getElementById("idDelete").value = id;
+        }
+    </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

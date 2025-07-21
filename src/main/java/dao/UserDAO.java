@@ -7,6 +7,7 @@ package dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -213,6 +214,66 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+    
+    
+    public void deleteAllData(int userId) {
+    String deleteManualPayments = "DELETE FROM manual_payments WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+    String deleteOrderItems = "DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+    String deleteOrders = "DELETE FROM orders WHERE user_id = ?";
+    String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = ?)";
+    String deleteCarts = "DELETE FROM carts WHERE user_id = ?";
+    String deleteMessages = "DELETE FROM messages WHERE users_id = ?";
+    String deleteUser = "DELETE FROM users WHERE id = ?";
+
+    try {
+        conn.setAutoCommit(false); // Bắt đầu transaction
+
+        PreparedStatement ps1 = conn.prepareStatement(deleteManualPayments);
+        ps1.setInt(1, userId);
+        ps1.executeUpdate();
+
+        PreparedStatement ps2 = conn.prepareStatement(deleteOrderItems);
+        ps2.setInt(1, userId);
+        ps2.executeUpdate();
+
+        PreparedStatement ps3 = conn.prepareStatement(deleteOrders);
+        ps3.setInt(1, userId);
+        ps3.executeUpdate();
+
+        PreparedStatement ps4 = conn.prepareStatement(deleteCartItems);
+        ps4.setInt(1, userId);
+        ps4.executeUpdate();
+
+        PreparedStatement ps5 = conn.prepareStatement(deleteCarts);
+        ps5.setInt(1, userId);
+        ps5.executeUpdate();
+
+        PreparedStatement ps6 = conn.prepareStatement(deleteMessages);
+        ps6.setInt(1, userId);
+        ps6.executeUpdate();
+
+        PreparedStatement ps7 = conn.prepareStatement(deleteUser);
+        ps7.setInt(1, userId);
+        ps7.executeUpdate();
+
+        conn.commit(); // Thành công → commit
+
+    } catch (Exception e) {
+        try {
+            conn.rollback(); // Lỗi → rollback
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        e.printStackTrace();
+    } finally {
+        try {
+            conn.setAutoCommit(true); // Trả lại trạng thái mặc định
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
 
     public List<Message> loadMessageByUserId(int userId) {
         String sql = "SELECT * FROM messages \n"
