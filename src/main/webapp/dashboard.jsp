@@ -75,7 +75,7 @@
                                 </ul>
                             </li>
                             <!-- Sản phẩm -->
-                            <li class="nav-item dropdown">
+<!--                            <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     Sản phẩm
@@ -84,11 +84,11 @@
                                     <li><a class="dropdown-item" href="#">Quản lý sản phẩm</a></li>
                                     <li><a class="dropdown-item" href="#">Danh mục sản phẩm</a></li>
                                     <li>
-                                        <!-- <hr class="dropdown-divider">
+                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li> 
                                 </ul>
-                            </li>
+                            </li>-->
 
                             <!-- Sự kiện -->
                             <li class="nav-item dropdown">
