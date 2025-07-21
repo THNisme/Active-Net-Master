@@ -4,7 +4,6 @@
  */
 package dao;
 
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,18 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
 import model.CartItem;
+import model.User;
 import utils.DBContext;
 
 /**
  * @author Lê Hữu Tính
  */
 public class CartDAO extends DBContext {
+
     public CartDAO() {
         super();
     }
 
     public Cart getCartByUserId(int userId) {
-        String sql = "SELECT * FROM carts WHERE user_id = ?";
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id\n"
+                + "					  where users.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -32,7 +36,18 @@ public class CartDAO extends DBContext {
                 int id = rs.getInt("id");
                 Date createdAt = rs.getDate("created_at");
                 Date updatedAt = rs.getDate("updated_at");
-                Cart cart = new Cart(id, userId, createdAt, updatedAt);
+
+                int uid = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
+
+                Cart cart = new Cart(id, u, createdAt, updatedAt);
 
                 CartItemDAO itemsDAO = new CartItemDAO();
                 List<CartItem> items = itemsDAO.getItemsByCartId(id);
@@ -46,17 +61,29 @@ public class CartDAO extends DBContext {
     }
 
     public List<Cart> getAll() {
-        String sql = "SELECT * FROM carts";
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id";
         List<Cart> list = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");
-                int uid = rs.getInt("user_id");
                 Date createdAt = rs.getDate("created_at");
                 Date updatedAt = rs.getDate("updated_at");
-                Cart cart = new Cart(id, uid, createdAt, updatedAt);
+
+                int uid = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
+
+                Cart cart = new Cart(id, u, createdAt, updatedAt);
 
                 CartItemDAO itemsDAO = new CartItemDAO();
                 List<CartItem> items = itemsDAO.getItemsByCartId(id);
@@ -93,16 +120,29 @@ public class CartDAO extends DBContext {
     }
 
     public Cart getCartById(int id) {
-        String sql = "SELECT * FROM carts WHERE id = ?";
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id\n"
+                + "					  where carts.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int uid = rs.getInt("user_id");
                 Date createdAt = rs.getDate("created_at");
                 Date updatedAt = rs.getDate("updated_at");
-                Cart cart = new Cart(id, uid, createdAt, updatedAt);
+
+                int uid = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
+
+                Cart cart = new Cart(id, u, createdAt, updatedAt);
 
                 CartItemDAO itemsDAO = new CartItemDAO();
                 List<CartItem> items = itemsDAO.getItemsByCartId(id);
@@ -114,17 +154,10 @@ public class CartDAO extends DBContext {
         }
         return null;
     }
-
-    public void updateTimestamps(int id) {
-        String sql = "UPDATE carts SET updated_at = CURRENT_TIMESTAMP WHERE id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("updateTimestamps: " + e.getMessage());
-        }
+    
+    public static void main(String[] args) {
+        CartDAO dao = new CartDAO();
+        System.out.println(dao.getCartById(1).getUser().getName());
     }
 
-    
 }
