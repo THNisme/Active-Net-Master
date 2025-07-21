@@ -152,19 +152,19 @@
                                 Active Net
                             </h4>
                             <ul class="footer-link-list">
-                                <a href="" class="footer-item-link">
+                                <a href="home" class="footer-item-link">
                                     <li class="footer-link-list-item">Trang chủ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="about" class="footer-item-link">
                                     <li class="footer-link-list-item">Giới thiệu</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="product" class="footer-item-link">
                                     <li class="footer-link-list-item">Cửa hàng</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="contact" class="footer-item-link">
                                     <li class="footer-link-list-item">Liên hệ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="login" class="footer-item-link">
                                     <li class="footer-link-list-item">Đăng nhập</li>
                                 </a>
                             </ul>

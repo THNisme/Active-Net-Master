@@ -117,7 +117,6 @@ public class UserDAO extends DBContext {
             //            int nextId = getNextId();
 //            
 //            ps.setInt(1, nextId);
-
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, phone);
@@ -194,6 +193,7 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+
     public void updateProfile(int id, String name, String email, String phone, String password_hash) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [password_hash] = ?\n"
                 + "WHERE id = ?";
@@ -211,6 +211,7 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+
     public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
                 + "WHERE id = ?";
@@ -484,6 +485,8 @@ public class UserDAO extends DBContext {
                 CartItem item = new CartItem();
                 item.setId(rs.getInt("id"));
 
+                String itemType = rs.getString("item_type");
+                int itemId = rs.getInt("item_id");
                 Cart cart = new Cart();
                 cart.setId(cartId);
                 item.setCart(cart);
@@ -493,6 +496,31 @@ public class UserDAO extends DBContext {
                 item.setQuantity(rs.getInt("quantity"));
                 item.setUnitPrice(rs.getInt("unit_price"));
                 item.setAddedAt(rs.getDate("added_at"));
+
+                String itemName = null;
+                if ("product".equalsIgnoreCase(itemType)) {
+                    String sqlProduct = "SELECT name FROM products WHERE id = ?";
+                    PreparedStatement psProduct = conn.prepareStatement(sqlProduct);
+                    psProduct.setInt(1, itemId);
+                    ResultSet rsProduct = psProduct.executeQuery();
+                    if (rsProduct.next()) {
+                        itemName = rsProduct.getString("name");
+                    }
+                    rsProduct.close();
+                    psProduct.close();
+                } else if ("ticket".equalsIgnoreCase(itemType)) {
+                    String sqlTicket = "SELECT name FROM tickets WHERE id = ?";
+                    PreparedStatement psTicket = conn.prepareStatement(sqlTicket);
+                    psTicket.setInt(1, itemId);
+                    ResultSet rsTicket = psTicket.executeQuery();
+                    if (rsTicket.next()) {
+                        itemName = rsTicket.getString("name");
+                    }
+                    rsTicket.close();
+                    psTicket.close();
+                }
+
+                item.setProductName(itemName);
 
                 list.add(item);
             }

@@ -11,10 +11,11 @@ import java.sql.Date;
  * @author Tính
  */
 public class CartItem {
+
     private int id;
-    private Cart cart;            
-    private String itemType;    
-    private int itemId;          
+    private Cart cart;
+    private String itemType;
+    private int itemId;
     private int quantity;
     private int unitPrice;
     private Date addedAt;
@@ -86,5 +87,18 @@ public class CartItem {
 
     public void setAddedAt(Date addedAt) {
         this.addedAt = addedAt;
+    }
+    private String productName; // thêm dòng này
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getTotal() {
+        return quantity * unitPrice;
     }
 }
