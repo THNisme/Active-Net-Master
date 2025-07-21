@@ -13,28 +13,28 @@ import java.util.List;
  */
 public class Cart {
     private int id;
-    private int userId;
+    private User user;
     private Date createdAt;
     private Date updatedAt;
     private List<CartItem> items;
 
     public Cart() {}
 
-    public Cart(int id, int userId, Date createdAt, Date updatedAt) {
+    public Cart(int id, User user, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.items = null;
     }
 
-    public Cart(int id, int userId, Date createdAt, Date updatedAt, List<CartItem> items) {
+    public Cart(int id, User user, Date createdAt, Date updatedAt, List<CartItem> items) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.items = items;
     }
-    
 
     public int getId() {
         return id;
@@ -44,12 +44,12 @@ public class Cart {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getCreatedAt() {
@@ -74,5 +74,5 @@ public class Cart {
 
     public void setItems(List<CartItem> items) {
         this.items = items;
-    }
+    } 
 }

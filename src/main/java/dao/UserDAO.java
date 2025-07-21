@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import model.Cart;
 import model.IO;
 import model.ManualPayment;
 import model.Message;
@@ -319,6 +320,41 @@ public class UserDAO extends DBContext {
 
                 Order o = new Order(orderId, u, totalAmount, status, bankTransferNote, createdAt);
                 return o;
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Cart getCartById(int cartId) {
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id\n"
+                + "					  where carts.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cartId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Date createdAt = rs.getDate("created_at");
+                Date updatedAt = rs.getDate("updated_at");
+
+                int userId = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
+
+                Cart c = new Cart(role, u, createdAt, updatedAt);
+                return c;
             }
 
         } catch (Exception e) {
