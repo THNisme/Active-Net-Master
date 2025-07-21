@@ -166,7 +166,7 @@
                             <ul class="list-unstyled">
                                 <li><a href="shop?category=all<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Tất cả</a></li>
                                 <li><a href="shop?category=1<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vé sự kiện</a></li>
-                                <li><a href="shop?category=2<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vật phẩm sự kiện</a></li>
+                                <li><a href="shop?category=21<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Sự kiện mới</a></li>
                             </ul>
 
                             <!-- Sắp xếp -->
