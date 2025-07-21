@@ -64,8 +64,9 @@ public class UsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-
-        if (session.getAttribute("user") != null) {
+        User u = (User) session.getAttribute("user");
+        
+        if (session.getAttribute("user") != null && u.getRole() == 1) {
 
             String view = request.getParameter("view");
 
@@ -109,14 +110,13 @@ public class UsersServlet extends HttpServlet {
             String phone = request.getParameter("phoneEdit");
             int role = Integer.parseInt(request.getParameter("roleEdit"));
             String date = request.getParameter("dateEdit");
-            
 
             UserDAO userDao = new UserDAO();
             userDao.updateDashboard(id, name, email, phone, role, date);
             response.sendRedirect("users");
         } else if (view.equalsIgnoreCase("delete")) {
             int id = Integer.parseInt(request.getParameter("idDelete"));
-            
+
             UserDAO userDao = new UserDAO();
             userDao.deleteAllData(id);
             response.sendRedirect("users");

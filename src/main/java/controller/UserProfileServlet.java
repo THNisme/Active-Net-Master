@@ -4,8 +4,7 @@
  */
 package controller;
 
-import dao.MessageDAO;
-import dao.ProductDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,17 +13,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.Message;
-import model.Product;
 import model.User;
 
 /**
  *
  * @author BACH YEN
  */
-@WebServlet(name = "DashboardServlet", urlPatterns = {"/dashboard"})
-public class DashboardServlet extends HttpServlet {
+@WebServlet(name = "UserProfileServlet", urlPatterns = {"/profile"})
+public class UserProfileServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +39,10 @@ public class DashboardServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DashboardServlet</title>");
+            out.println("<title>Servlet UserProfileServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DashboardServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UserProfileServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,26 +60,16 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
         User u = (User) session.getAttribute("user");
 
 //      LOGIN SUCCESS
-        if (session.getAttribute("user") != null && u.getRole() == 1) {
-
-            String view = request.getParameter("view");
-
-            if (view == null) {
-                view = "list";
-            }
-
-            if (view.equalsIgnoreCase("list")) {
-                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-            }
-
+        if (session.getAttribute("user") != null) {
+            request.getRequestDispatcher("user.jsp").forward(request, response);
         } else {
             response.sendRedirect("login");
         }
-
     }
 
     /**
@@ -97,7 +83,23 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String view = request.getParameter("view");
 
+        if (view == null) {
+            view = "edit";
+        }
+
+        if (view.equalsIgnoreCase("edit")) {
+            int id = Integer.parseInt(request.getParameter("inputUID"));
+            String name = request.getParameter("inputUserName");
+            String email = request.getParameter("inputEmail");
+            String pass = request.getParameter("inputPassword");
+            String phone = request.getParameter("inputPhone");
+
+            UserDAO userDao = new UserDAO();
+            userDao.updateProfile(id, name, email, phone, pass);
+            response.sendRedirect("profile");
+        }
     }
 
     /**

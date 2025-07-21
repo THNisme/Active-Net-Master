@@ -184,6 +184,25 @@ public class UserDAO extends DBContext {
         }
     }
     
+    
+    public void updateProfile(int id, String name, String email, String phone, String password_hash) {
+        String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [password_hash] = ?\n"
+                + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.setString(4, IO.hashMD5(password_hash));
+            ps.setInt(5, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
                 + "WHERE id = ?";

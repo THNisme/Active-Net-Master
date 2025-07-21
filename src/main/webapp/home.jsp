@@ -47,10 +47,10 @@
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home" class="nav-item-link">
+                            <a href="home" class="nav-item-link active">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.jsp" class="nav-item-link active">
+                            <a href="about.jsp" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
                             <a href="product" class="nav-item-link">
@@ -67,11 +67,11 @@
                             if (u == null) {
 
                         %>
-                        <a href="login.jsp" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
                         <%                        } else {
                         %>
                         <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
-                        <a href="user.jsp" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
                             <%                        }
                             %>
                     </div>

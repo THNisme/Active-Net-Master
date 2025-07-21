@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.util.List;
 import model.Message;
+import model.User;
 
 /**
  *
@@ -63,8 +64,9 @@ public class MessagesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("user");
 
-        if (session.getAttribute("user") != null) {
+        if (session.getAttribute("user") != null && u.getRole() == 1) {
 
             String view = request.getParameter("view");
 
