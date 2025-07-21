@@ -1,7 +1,8 @@
+<%@page import="model.User"%>
 <!doctype html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Product" %>
+<%@ page import="model.Ticket" %>
 
 <%
     String currentCategory = request.getParameter("category") != null ? request.getParameter("category") : "all";
@@ -37,29 +38,39 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-3">
-                        <a class="nav-logo-link" href="#">
+                        <a class="nav-logo-link" href="">
                             <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
                         </a>
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home.html" class="nav-item-link">
+                            <a href="home" class="nav-item-link">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.html" class="nav-item-link">
+                            <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="shop.html" class="nav-item-link active">
+                            <a href="product" class="nav-item-link active">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
-                            <a href="contact.html" class="nav-item-link">
+                            <a href="contact" class="nav-item-link">
                                 <li class="nav-list-item">Liên hệ</li>
                             </a>
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
-                        <a href="#" class="btn primary-btn btn-nav-login"><i class="bi bi-person-circle"></i></a>
+                        <%
+                            User d = (User) session.getAttribute("user");
+                            if (d == null) {
+
+                        %>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <%                        } else {
+                        %>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                            <%                        }
+                            %>
                     </div>
                 </div>
         </nav>
@@ -144,7 +155,7 @@
                         <div class="filter-box">
                             <!-- Tìm kiếm -->
                             <div class="mb-4">
-                                <form action="product" method="get" class="custom-search-bar">
+                                <form action="shop" method="get" class="custom-search-bar">
                                     <input type="text" name="keyword" placeholder="Tìm sản phẩm..." class="form-control"
                                            value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : ""%>"/>
                                 </form>
@@ -153,18 +164,18 @@
                             <!-- Bộ lọc danh mục -->
                             <p class="filter-heading"><strong>Danh mục</strong></p>
                             <ul class="list-unstyled">
-                                <li><a href="product?category=all<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Tất cả</a></li>
-                                <li><a href="product?category=1<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vé sự kiện</a></li>
-                                <li><a href="product?category=2<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vật phẩm sự kiện</a></li>
+                                <li><a href="shop?category=all<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Tất cả</a></li>
+                                <li><a href="shop?category=1<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vé sự kiện</a></li>
+                                <li><a href="shop?category=21<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Sự kiện mới</a></li>
                             </ul>
 
                             <!-- Sắp xếp -->
                             <p class="filter-heading mt-4"><strong>Sắp xếp:</strong></p>
                             <ul class="list-unstyled">
-                                <li><a href="product?category=<%= currentCategory%>&sort=az">A-Z</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=za">Z-A</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=lowtohigh">Giá thấp đến cao</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=hightolow">Giá cao đến thấp</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=az">A-Z</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=za">Z-A</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=lowtohigh">Giá thấp đến cao</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=hightolow">Giá cao đến thấp</a></li>
                             </ul>
                         </div>
                     </aside>
@@ -172,9 +183,9 @@
                     <div class="col-md-9">
                         <div class="product-container row">
                             <%
-                                List<Product> productList = (List<Product>) request.getAttribute("productList");
+                                List<Ticket> productList = (List<Ticket>) request.getAttribute("productList");
                                 if (productList != null && !productList.isEmpty()) {
-                                    for (Product p : productList) {
+                                    for (Ticket p : productList) {
                             %>
                             <div class="col-md-4 mb-4 d-flex">
                                 <div class="ticket-wrapper">
@@ -260,19 +271,19 @@
                                 Active Net
                             </h4>
                             <ul class="footer-link-list">
-                                <a href="" class="footer-item-link">
+                                <a href="home" class="footer-item-link">
                                     <li class="footer-link-list-item">Trang chủ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="about" class="footer-item-link">
                                     <li class="footer-link-list-item">Giới thiệu</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="product" class="footer-item-link">
                                     <li class="footer-link-list-item">Cửa hàng</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="contact" class="footer-item-link">
                                     <li class="footer-link-list-item">Liên hệ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="login" class="footer-item-link">
                                     <li class="footer-link-list-item">Đăng nhập</li>
                                 </a>
                             </ul>

@@ -29,12 +29,15 @@ public class DBContext {
                     + "password=123456;"
                     + "encrypt=true;trustServerCertificate=true;";
 
+<<<<<<< HEAD
 //         // dbURL của Tính
 //            String dbURL = "jdbc:sqlserver://localhost:1433;"
 //                    + "databaseName=Active_Net_Master;"
 //                    + "user=sa;"
 //                    + "password=688464672;"
 //                    + "encrypt=true;trustServerCertificate=true;";
+=======
+>>>>>>> 0ce626bf123fc2ed722f822fe06da8a9428b5641
             conn = DriverManager.getConnection(dbURL);
             if (conn != null) {
                 DatabaseMetaData dm = (DatabaseMetaData) conn.getMetaData();

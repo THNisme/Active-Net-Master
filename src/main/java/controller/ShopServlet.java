@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UserDAO;
+import dao.TicketsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,17 +12,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.util.Comparator;
 import java.util.List;
-import model.IO;
-import model.User;
+import model.Ticket;
 
 /**
  *
- * @author BACH YEN
+ * @author Admin
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "ShopServlet", urlPatterns = {"/shop"})
+public class ShopServlet extends HttpServlet {
+     private TicketsDAO dao;
+
+    @Override
+    public void init() throws ServletException {
+       dao = new TicketsDAO();
+    }
+     
+     
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +48,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet ShopServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShopServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +69,52 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        TicketsDAO dao = new TicketsDAO();
+
+        String keyword = request.getParameter("keyword");
+        String category = request.getParameter("category");
+        String sort = request.getParameter("sort");
+        List<Ticket> ticketList;
+
+        //Tìm kiếm theo keyword
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ticketList = dao.searchTicketsByName(keyword.trim());
+        } else {
+            if (category != null && !category.equals("all")) {
+                try {
+                    int catId = Integer.parseInt(category);
+                    ticketList = dao.getTicketsByCateID(catId);
+                } catch (NumberFormatException e) {
+                    ticketList = dao.getAll();
+                }
+            } else {
+                ticketList = dao.getAll();
+            }
+        }
+
+        // Sắp xếp
+        if (sort != null) {
+            switch (sort) {
+                case "az":
+                    ticketList.sort(Comparator.comparing(Ticket::getName));
+                    break;
+                case "za":
+                    ticketList.sort(Comparator.comparing(Ticket::getName).reversed());
+                    break;
+                case "lowtohigh":
+                    ticketList.sort(Comparator.comparingLong(Ticket::getPrice));
+                    break;
+                case "hightolow":
+                    ticketList.sort(Comparator.comparingLong(Ticket::getPrice).reversed());
+                    break;
+            }
+        }
+
+        request.setAttribute("productList", ticketList);
+        request.setAttribute("keyword", keyword != null ? keyword : "");
+        request.setAttribute("currentCategory", category != null ? category : "all");
+        request.setAttribute("currentSort", sort != null ? sort : "");
+        request.getRequestDispatcher("shop.jsp").forward(request, response);
     }
 
     /**
@@ -76,41 +128,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String user = request.getParameter("user");
-        String pass = request.getParameter("pass");
-
-        List<String> errorList = IO.userLoginValidator(user, pass);
-        HttpSession session = request.getSession();
-
-        if (!errorList.isEmpty()) {
-
-            session.setAttribute("errorList", errorList);
-            response.sendRedirect("login");
-        } else {
-
-            UserDAO dao = new UserDAO();
-            User u = dao.login(user, pass);
-
-            if (u.getId() != -1) {
-
-                if (u.getRole() == 1) {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("dashboard");
-                } else {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("home");
-                }
-
-            } else {
-                errorList.add("Email hoặc mật khẩu sai");
-                session.setAttribute("errorList", errorList);
-                response.sendRedirect("login");
-            }
-        }
+        doGet(request, response);
     }
 
     /**

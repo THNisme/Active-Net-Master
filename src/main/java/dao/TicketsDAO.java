@@ -81,6 +81,42 @@ public class TicketsDAO extends DBContext {
         return null;
     }
 
+    public List<Ticket> getTicketsByCateID(int cateID) {
+        String sql = "SELECT tickets.*, ticket_categories.name AS cate_name, ticket_categories.description\n"
+                + "FROM     ticket_categories INNER JOIN\n"
+                + "tickets ON ticket_categories.id = tickets.category_id\n"
+                + "WHERE 	category_id = ?;";
+        List<Ticket> list = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cateID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int tikId = rs.getInt("id");
+                int eventId = rs.getInt("event_id");
+                EventsDAO eventDao = new EventsDAO();
+                Event e = eventDao.getEventById(eventId);
+
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int quantity = rs.getInt("quantity");
+                String img = rs.getString("image_url");
+                int cateId = rs.getInt("category_id");
+
+                TicketCategoriesDAO ticketDao = new TicketCategoriesDAO();
+                TicketCategories t = ticketDao.getTicketCategoryById(cateId);
+                Ticket ticket = new Ticket(tikId, e, name, price, quantity, img, t);
+
+                list.add(ticket);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+
     public void create(int eventId, String name, int price, int quantity, String imageUrl, int categoryId) {
         String sql = "INSERT INTO tickets (event_id, name, price, quantity, image_url, category_id) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -160,7 +196,6 @@ public class TicketsDAO extends DBContext {
 //
 //        return list;
 //    }
-
     public List<Ticket> searchTicketsByName(String name) {
         List<Ticket> list = new ArrayList<>();
         String sql = "SELECT * FROM tickets WHERE name LIKE ?";
@@ -195,9 +230,11 @@ public class TicketsDAO extends DBContext {
 
         return list;
     }
+
     public static void main(String[] args) {
         TicketsDAO dao = new TicketsDAO();
-        for (Ticket e : dao.getAll()) {
+        List<Ticket> list = dao.getTicketsByCateID(7);
+        for (Ticket e : list) {
             System.out.println(e.getId() + "  " + e.getName());
         }
     }

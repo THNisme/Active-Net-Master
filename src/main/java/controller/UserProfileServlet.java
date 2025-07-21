@@ -98,6 +98,13 @@ public class UserProfileServlet extends HttpServlet {
 
             UserDAO userDao = new UserDAO();
             userDao.updateProfile(id, name, email, phone, pass);
+
+//          UPDATE SESSION
+            UserDAO dao = new UserDAO();
+            User u = dao.getUserById(id);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", u);
+
             response.sendRedirect("profile");
         }
     }

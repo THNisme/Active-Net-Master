@@ -4,6 +4,9 @@
  */
 package controller;
 
+import dao.CartDAO;
+import dao.CartItemDAO;
+import dao.OrderDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,15 +17,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.IO;
+import model.Cart;
+import model.CartItem;
+import model.Order;
 import model.User;
 
 /**
  *
- * @author BACH YEN
+ * @author Hieu
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "CartServlet", urlPatterns = {"/cart"})
+public class CartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +46,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet CartServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CartServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +67,32 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+        User user = (User) session.getAttribute("user");
+        int userId = user.getId();
+
+        UserDAO userDAO = new UserDAO();
+        Cart cart = userDAO.loadCartByUserId(userId);
+
+        if (cart == null) {
+            response.getWriter().println("Không có giỏ hàng cho user ID: " + userId);
+            return;
+        }
+
+        List<CartItem> items = userDAO.getItemsByCartId(cart.getId());
+
+        // BankTransferNote = cartId_username
+        String bankTransferNote = "Cart" + cart.getId() + "_" + user.getName();
+
+        request.setAttribute("cart", cart);
+        request.setAttribute("items", items);
+        request.setAttribute("bankTransferNote", bankTransferNote); // Truyền sang JSP
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
+
     }
 
     /**
@@ -76,41 +106,27 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String user = request.getParameter("user");
-        String pass = request.getParameter("pass");
+        String action = request.getParameter("action");
+        if ("checkout".equalsIgnoreCase(action)) {
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
 
-        List<String> errorList = IO.userLoginValidator(user, pass);
-        HttpSession session = request.getSession();
+            int userId = user.getId();
 
-        if (!errorList.isEmpty()) {
+            CartDAO cartDAO = new CartDAO();
 
-            session.setAttribute("errorList", errorList);
-            response.sendRedirect("login");
-        } else {
+            OrderDAO orderDAO = new OrderDAO();
+            int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
+            String bankTransferNote = request.getParameter("bankTransferNote");
 
-            UserDAO dao = new UserDAO();
-            User u = dao.login(user, pass);
+            orderDAO.create(userId, totalAmount, bankTransferNote);
 
-            if (u.getId() != -1) {
+            cartDAO.delete(userId);
 
-                if (u.getRole() == 1) {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("dashboard");
-                } else {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("home");
-                }
-
-            } else {
-                errorList.add("Email hoặc mật khẩu sai");
-                session.setAttribute("errorList", errorList);
-                response.sendRedirect("login");
-            }
+            // 3. Chuyển hướng sau khi thanh toán
+            request.getRequestDispatcher("order-success.jsp").forward(request, response);
         }
+
     }
 
     /**

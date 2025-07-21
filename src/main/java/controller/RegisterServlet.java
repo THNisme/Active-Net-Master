@@ -12,6 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.IO;
 
 /**
  *
@@ -79,10 +82,22 @@ public class RegisterServlet extends HttpServlet {
         int role = 0;
         
         UserDAO userDAO = new UserDAO();
+        List<String> errorList = IO.userRegisterValidator(name, email, password, phone);
+        if (userDAO.emailHasExisted(email)) {
+            errorList.add("Email đã tồn tại");
+        }
+        if (errorList.isEmpty() ) {
+            
         userDAO.create(name, email, phone, password, role);
         
         request.setAttribute("notify", "Tạo thành công");
         request.getRequestDispatcher("register.jsp").forward(request, response);
+        } else {
+            HttpSession session = request.getSession();
+            session.setAttribute("errorList", errorList);
+            response.sendRedirect("register");
+        }
+        
     }
 
     /**

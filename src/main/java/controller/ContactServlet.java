@@ -4,7 +4,6 @@
  */
 package controller;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,17 +11,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.IO;
-import model.User;
 
 /**
  *
  * @author BACH YEN
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "ContactServlet", urlPatterns = {"/contact"})
+public class ContactServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +36,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet ContactServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ContactServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,7 +57,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        request.getRequestDispatcher("contact.jsp").forward(request, response);
     }
 
     /**
@@ -76,41 +71,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String user = request.getParameter("user");
-        String pass = request.getParameter("pass");
-
-        List<String> errorList = IO.userLoginValidator(user, pass);
-        HttpSession session = request.getSession();
-
-        if (!errorList.isEmpty()) {
-
-            session.setAttribute("errorList", errorList);
-            response.sendRedirect("login");
-        } else {
-
-            UserDAO dao = new UserDAO();
-            User u = dao.login(user, pass);
-
-            if (u.getId() != -1) {
-
-                if (u.getRole() == 1) {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("dashboard");
-                } else {
-                    session = request.getSession();
-                    session.setAttribute("user", u);
-                    session.setAttribute("errorList", null);
-                    response.sendRedirect("home");
-                }
-
-            } else {
-                errorList.add("Email hoặc mật khẩu sai");
-                session.setAttribute("errorList", errorList);
-                response.sendRedirect("login");
-            }
-        }
+        processRequest(request, response);
     }
 
     /**
