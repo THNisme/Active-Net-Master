@@ -18,7 +18,7 @@ import model.Product;
 
 /**
  *
- * @author Lê Hưux Tính
+ * @author Lê Hữu Tính
  */
 @WebServlet(name = "ProductServlet", urlPatterns = {"/product"})
 public class ProductServlet extends HttpServlet {
@@ -66,55 +66,55 @@ public class ProductServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    ProductDAO dao = new ProductDAO();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ProductDAO dao = new ProductDAO();
 
-    String keyword = request.getParameter("keyword");
-    String category = request.getParameter("category");
-    String sort = request.getParameter("sort");
-    List<Product> productList;
+        String keyword = request.getParameter("keyword");
+        String category = request.getParameter("category");
+        String sort = request.getParameter("sort");
+        List<Product> productList;
 
-    //Tìm kiếm theo keyword
-    if (keyword != null && !keyword.trim().isEmpty()) {
-        productList = dao.searchByName(keyword.trim());
-    } else {
-        if (category != null && !category.equals("all")) {
-            try {
-                int catId = Integer.parseInt(category);
-                productList = dao.getByCategory(catId);
-            } catch (NumberFormatException e) {
+        //Tìm kiếm theo keyword
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            productList = dao.searchByName(keyword.trim());
+        } else {
+            if (category != null && !category.equals("all")) {
+                try {
+                    int catId = Integer.parseInt(category);
+                    productList = dao.getByCategory(catId);
+                } catch (NumberFormatException e) {
+                    productList = dao.getAll();
+                }
+            } else {
                 productList = dao.getAll();
             }
-        } else {
-            productList = dao.getAll();
         }
-    }
 
-    // Sắp xếp
-    if (sort != null) {
-        switch (sort) {
-            case "az":
-                productList.sort(Comparator.comparing(Product::getName));
-                break;
-            case "za":
-                productList.sort(Comparator.comparing(Product::getName).reversed());
-                break;
-            case "lowtohigh":
-                productList.sort(Comparator.comparingLong(Product::getPrice));
-                break;
-            case "hightolow":
-                productList.sort(Comparator.comparingLong(Product::getPrice).reversed());
-                break;
+        // Sắp xếp
+        if (sort != null) {
+            switch (sort) {
+                case "az":
+                    productList.sort(Comparator.comparing(Product::getName));
+                    break;
+                case "za":
+                    productList.sort(Comparator.comparing(Product::getName).reversed());
+                    break;
+                case "lowtohigh":
+                    productList.sort(Comparator.comparingLong(Product::getPrice));
+                    break;
+                case "hightolow":
+                    productList.sort(Comparator.comparingLong(Product::getPrice).reversed());
+                    break;
+            }
         }
-    }
 
-    request.setAttribute("productList", productList);
-    request.setAttribute("keyword", keyword != null ? keyword : "");
-    request.setAttribute("currentCategory", category != null ? category : "all");
-    request.setAttribute("currentSort", sort != null ? sort : "");
-    request.getRequestDispatcher("shop.jsp").forward(request, response);
-}
+        request.setAttribute("productList", productList);
+        request.setAttribute("keyword", keyword != null ? keyword : "");
+        request.setAttribute("currentCategory", category != null ? category : "all");
+        request.setAttribute("currentSort", sort != null ? sort : "");
+        request.getRequestDispatcher("shop.jsp").forward(request, response);
+    }
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -125,10 +125,10 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    doGet(request, response); // Gọi lại doGet cho xử lý chung
-}
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response); // Gọi lại doGet cho xử lý chung
+    }
 
     /**
      * Returns a short description of the servlet.
@@ -139,6 +139,5 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
 
 }
