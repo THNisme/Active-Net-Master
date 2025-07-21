@@ -13,8 +13,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
 import java.util.List;
 import model.Message;
+import model.User;
 
 /**
  *
@@ -62,8 +64,9 @@ public class MessagesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("user");
 
-        if (session.getAttribute("user") != null) {
+        if (session.getAttribute("user") != null && u.getRole() == 1) {
 
             String view = request.getParameter("view");
 
@@ -74,6 +77,11 @@ public class MessagesServlet extends HttpServlet {
             if (view.equalsIgnoreCase("list")) {
                 MessageDAO mesDao = new MessageDAO();
                 List<Message> mesList = mesDao.getAll();
+                request.setAttribute("mesList", mesList);
+                request.getRequestDispatcher("message.jsp").forward(request, response);
+            } else if (view.equalsIgnoreCase("inbox")) {
+                MessageDAO mesDao = new MessageDAO();
+                List<Message> mesList = mesDao.getAllUnreaded();
                 request.setAttribute("mesList", mesList);
                 request.getRequestDispatcher("message.jsp").forward(request, response);
             }
@@ -94,18 +102,31 @@ public class MessagesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String view = request.getParameter("view");
+        String view = request.getParameter("view");
 
         if (view == null) {
             view = "edit";
         }
-        
+
         if (view.equalsIgnoreCase("edit")) {
-            String id = request.getParameter("idEdit");
+            int id = Integer.parseInt(request.getParameter("idEdit"));
+            int statusInt = Integer.parseInt(request.getParameter("statusEdit"));
+            boolean status = false;
+
+            if (statusInt == 1) {
+                status = true;
+            }
+
+            MessageDAO mesDao = new MessageDAO();
+            mesDao.checkReaded(id, status);
+            response.sendRedirect("messages");
+        } else if (view.equalsIgnoreCase("delete")) {
+
+            int id = Integer.parseInt(request.getParameter("idDelete"));
+            MessageDAO mesDao = new MessageDAO();
+            mesDao.delete(id);
+            response.sendRedirect("messages");
         }
-        
-        
-        
 
     }
 

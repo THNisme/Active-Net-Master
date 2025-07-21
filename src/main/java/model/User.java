@@ -20,7 +20,7 @@ public class User {
     private int role;
     private Date createdAt;
     
-    private List<Cart> carts;
+    private Cart cart;
     private List<Order> orders;
     private List<Message> messages;
 
@@ -28,7 +28,7 @@ public class User {
         this.id = -1;
     }
 
-    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, List<Cart> carts, List<Order> orders, List<Message> messages) {
+    public User(int id, String name, String email, String phone, String passwordHash, int role, Date createdAt, Cart cart, List<Order> orders, List<Message> messages) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -36,7 +36,7 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
         this.createdAt = createdAt;
-        this.carts = carts;
+        this.cart = cart;
         this.orders = orders;
         this.messages = messages;
     }
@@ -49,7 +49,7 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
         this.createdAt = createdAt;
-        this.carts = null;
+        this.cart = null;
         this.orders = null;
         this.messages = null;
     }
@@ -110,12 +110,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public List<Cart> getCarts() {
-        return carts;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setCarts(List<Cart> carts) {
-        this.carts = carts;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public List<Order> getOrders() {

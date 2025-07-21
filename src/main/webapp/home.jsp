@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="model.IO"%>
 <%@page import="model.Product"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.Ticket"%>
@@ -47,13 +48,13 @@
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home.jsp" class="nav-item-link active">
+                            <a href="home" class="nav-item-link active">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
                             <a href="about.jsp" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="shop.jsp" class="nav-item-link">
+                            <a href="product" class="nav-item-link">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
                             <a href="contact.jsp" class="nav-item-link">
@@ -67,10 +68,11 @@
                             if (u == null) {
 
                         %>
-                        <a href="login.jsp" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
                         <%                        } else {
                         %>
-                        <a href="user.jsp" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
                             <%                        }
                             %>
                     </div>
@@ -137,7 +139,7 @@
                                         <img src="<%=t.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name">Vé sự kiện “<%=t.getName()%>”</p>
                                         <p class="ticket-time"><%=t.getEvent().getDate()%></p>
-                                        <p class="price"><%=t.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(t.getPrice() + "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -153,7 +155,7 @@
                                         <img src="<%=t.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name">Vé sự kiện “<%=t.getName()%>”</p>
                                         <p class="ticket-time"><%=t.getEvent().getDate()%></p>
-                                        <p class="price"><%=t.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(t.getPrice() + "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -272,7 +274,7 @@
                                     <div class="ticket-wrapper">
                                         <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name pro"><%=p.getName()%></p>
-                                        <p class="price"><%=p.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(p.getPrice()+ "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -284,15 +286,15 @@
                         <div class="container text-center">
                             <div class="row">
                                 <div class="ticket-wrapper">
-                                        <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
-                                        <p class="ticket-name pro"><%=p.getName()%></p>
-                                        <p class="price"><%=p.getPrice()%> VND</p>
-                                        <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
-                                    </div>
+                                    <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
+                                    <p class="ticket-name pro"><%=p.getName()%></p>
+                                    <p class="price"><%=IO.formatCurrency(p.getPrice()+ "")%> VND</p>
+                                    <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
+                                </div>
 
                                 <% }
-                                    i++;
-                                }%>
+                                        i++;
+                                    }%>
                             </div>
                         </div>
                     </div>

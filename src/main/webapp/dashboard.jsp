@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
     <head>
@@ -33,23 +34,18 @@
                             data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button class="btn primary-btn" type="submit"><i class="bi bi-search"></i></button>
-                    </form>
-
-                    <button type="button" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#addNewModal">
-                        <i class="bi bi-plus-circle"></i>
-                    </button>
                 </div>
 
 
                 <div class="dashboard-nav-wrapper">
                     <img src="./assets/img/logo/fac/LogoA-trans.png" alt="">
-                    <a class="navbar-brand dashboard-nav-brand" href="#">
-                        Welcome, [user.name]
+                    <a class="navbar-brand dashboard-nav-brand" href="dashboard">
+                        Welcome, <%User u = (User) session.getAttribute("user");
+                            out.println(u.getName());
+                        %>
                     </a>
+
+                    <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                 </div>
                 <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="offcanvasNavbar"
                      aria-labelledby="offcanvasNavbarLabel">
@@ -121,7 +117,8 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="messages">Tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages">Tất cả tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages?view=inbox">Tin nhắn chưa đọc</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -133,114 +130,14 @@
         </nav>
 
         <section class="dashboard-content container">
-            <h1 class="section-heading">Quản lý <span class="section-heading-pink">Đơn hàng</span></h1>
+            <h1 class="section-heading">Chào mừng đến với <span class="section-heading-pink">Active-Net-Admin</span></h1>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead>
-                        <tr class="table-dark text-center">
-                            <th scope="col">ID</th>
-                            <th scope="col">Email khách hàng</th>
-                            <th scope="col">Tổng tiền</th>
-                            <th scope="col">Trạng thái</th>
-                            <th scope="col">Nội dung chuyển khoản</th>
-                            <th scope="col">Ngày đặt</th>
-                            <th scope="col">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        <tr>
-                            <th scope="row" class="text-center">1</th>
-                            <td>Mark@gmail.com</td>
-                            <td>120.000</td>
-                            <td>Chưa xử lý</td>
-                            <td>0201</td>
-                            <td>14-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-center">2</th>
-                            <td>lisa99@yahoo.com</td>
-                            <td>85.000</td>
-                            <td>Đang giao</td>
-                            <td>0387</td>
-                            <td>13-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-center">3</th>
-                            <td>john.doe@outlook.com</td>
-                            <td>230.000</td>
-                            <td>Chưa xử lý</td>
-                            <td>0412</td>
-                            <td>12-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="text-center">4</th>
-                            <td>anna.pham@gmail.com</td>
-                            <td>175.000</td>
-                            <td>Đã hoàn thành</td>
-                            <td>0579</td>
-                            <td>11-7-2025</td>
-                            <td>
-                                <div class="table-tools-wrapper text-center">
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="#" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
-                                </div>
-                            </td>
-                        </tr>
 
-                    </tbody>
-                </table>
-            </div>
 
 
         </section>
 
-        <!-- Modal Add New -->
-        <div class="modal fade mt-5 " id="addNewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form class="form-control">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create new</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                                <label for="floatingInput">Email address</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                                <label for="floatingPassword">Password</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Create</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+
 
 
         <footer>

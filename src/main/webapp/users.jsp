@@ -1,6 +1,6 @@
 <%-- 
-    Document   : dashboard
-    Created on : Jul 7, 2025, 9:09:38 PM
+    Document   : users
+    Created on : Jul 21, 2025, 4:10:34 PM
     Author     : BACH YEN
 --%>
 
@@ -44,9 +44,10 @@
                         <button class="btn primary-btn" type="submit"><i class="bi bi-search"></i></button>
                     </form>
 
-                    <button type="button" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#addNewModal">
-                        <i class="bi bi-plus-circle"></i>
-                    </button>
+                    <a href="register" class="btn primary-btn"><i class="bi bi-plus-circle"></i></a>
+                    <!--                    <button type="button" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#addNewModal">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </button>-->
                 </div>
 
 
@@ -142,49 +143,53 @@
         </nav>
 
         <section class="dashboard-content container">
-            <h1 class="section-heading">Quản lý <span class="section-heading-pink">Tin nhắn</span></h1>
+            <h1 class="section-heading">Quản lý <span class="section-heading-pink">Tài khoản</span></h1>
 
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle">
                     <thead>
                         <tr class="table-dark text-center">
-                            <th scope="col">ID</th>
-                            <th scope="col">Email khách hàng</th>
-                            <th scope="col">Nội dung tin nhắn</th>
-                            <th scope="col">Trạng thái</th>
-                            <th scope="col">Ngày gửi</th>
+                            <th scope="col">UID</th>
+                            <th scope="col">Tên</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Số điện thoại</th>
+                            <th scope="col">Vai trò</th>                            
+                            <th scope="col">Ngày tạo</th>
                             <th scope="col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
                         <%
-                            List<Message> mesList = (List<Message>) request.getAttribute("mesList");
-                            if (request.getAttribute("mesList") != null) {
-                                for (Message m : mesList) {
+                            List<User> userList = (List<User>) request.getAttribute("userList");
+                            if (request.getAttribute("userList") != null) {
+                                for (User uItem : userList) {
 
                         %>
                         <tr>
-                            <th scope="row" class="text-center"><%=m.getId()%></th>
-                            <td><%=m.getUser().getEmail()%></td>
-                            <td><%=m.getContent()%></td>
+                            <th scope="row" class="text-center"><%=uItem.getId()%></th>
+                            <td><%=uItem.getName()%></td>
+                            <td><%=uItem.getEmail()%></td>
+                            <td><%=uItem.getPhone()%></td>
                             <td><%
-                                if (m.isReaded()) {
-                                    out.println("<p>" + "Đã đọc" + "</p>");
+                                if (uItem.getRole() == 0) {
+                                    out.println("<p style='margin-bottom: 0'>" + "Khách hàng" + "</p>");
+                                } else if (uItem.getRole() == 1) {
+                                    out.println("<p style='margin-bottom: 0'>" + "Quản trị viên" + "</p>");
                                 } else {
-                                    out.println("<p>" + "Chưa đọc" + "</p>");
+                                    out.println("<p style='margin-bottom: 0'>" + "Không xác định" + "</p>");
                                 }
                                 %></td>
-                            <td><%=m.getReleaseDate()%></td>
+                            <td><%=uItem.getCreatedAt()%></td>
                             <td>
                                 <div class="table-tools-wrapper text-center">
-                                    <a onclick="fnEdit('<%=m.getId()%>', '<%=m.getUser().getEmail()%>', '<%=m.getContent()%>', <%=m.isReaded()%>, '<%=m.getReleaseDate()%>', '<%=m.getUser().getId()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
-                                    <a onclick="fnDelete('<%=m.getId()%>')" class="btn primary-btn"><i class="bi bi-trash3" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
+                                    <a onclick="fnEdit('<%=uItem.getId()%>', '<%=uItem.getName()%>', '<%=uItem.getEmail()%>', '<%=uItem.getPhone()%>', '<%=uItem.getRole()%>', '<%=uItem.getCreatedAt()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
+                                    <a onclick="fnDelete('<%=uItem.getId()%>')" class="btn primary-btn"><i class="bi bi-trash3" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
                                 </div>
                             </td>
                         </tr>
                         <%}
                             } else {
-                                out.println("<p>" + "Không có tin nhắn nào" + "</p>");
+                                out.println("<p>" + "Không có tài khoản nào" + "</p>");
                             }
                         %>
 
@@ -198,138 +203,151 @@
         <!-- Modal Add New -->
         <div class="modal fade mt-5 " id="addNewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo tin nhắn mới</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="form-floating mb-3">
-                            <p>Chức năng chỉ áp dụng cho vai trò khách hàng !</p>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Edit -->
-        <div class="modal fade mt-5 " id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog" style="min-width: 1200px">
-
-                <form action="messages?view=edit" method="post">
+            <div class="modal-dialog" style="min-width: 1000px">
+                <form action="users?view=add" method="post">
                     <div class="modal-content">
 
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Chỉnh sửa</h1>
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo tài khoản mới</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         <div class="modal-body">
-                            <div class="mb-3 row">
-                                <label for="idEdit" class="col-sm-2 col-form-label fw-medium">ID:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="idEdit" name="idEdit">
-                                </div>
-                            </div>
 
                             <div class="mb-3 row">
-                                <label for="userEmailEdit" class="col-sm-2 col-form-label fw-medium">Gửi từ:</label>
+                                <label for="idAdd" class="col-sm-2 col-form-label fw-medium">Tên:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="userEmailEdit" name="userEmailEdit">
+                                    <input type="text" readonly class="form-control-plaintext" id="idAdd" name="idAdd">
                                 </div>
                             </div>
-
                             <div class="mb-3 row">
-                                <label for="contentDisplay" class="col-sm-2 col-form-label fw-medium">Nội dung:</label>
+                                <label for="idAdd" class="col-sm-2 col-form-label fw-medium">Tên:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="contentEdit" name="contentEdit"> 
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label for="statusEdit" class="col-sm-2 col-form-label fw-medium">Trạng thái:</label>
-                                <div class="col-sm-10">
-                                    <select name="statusEdit" id="statusEdit" class="form-select">
-                                        <option value="0">Chưa đọc</option>
-                                        <option value="1">Đã đọc</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label for="dateEdit" class="col-sm-2 col-form-label fw-medium">Ngày gửi:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="dateEdit" name="dateEdit">
+                                    <input type="text" readonly class="form-control-plaintext" id="idAdd" name="idAdd">
                                 </div>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-primary">Thay đổi</button>
-                        </div>
-
-                    </div>
-                </form>
-
-            </div>
-        </div>
-
-
-        <!-- Modal Delete -->
-        <div class="modal fade mt-5 " id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <form action="messages?view=delete" method="post">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Xóa tin nhắn</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            
-                            <div class="mb-3 row">
-                                <label for="dateEdit" class="col-sm-6 col-form-label">Bạn có chắc chắn xóa tin nhắn </label>
-                                <div class="col-sm-6">
-                                    <input type="text" readonly class="form-control-plaintext fw-medium" id="idDelete" name="idDelete"> 
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Modal Edit -->
+    <div class="modal fade mt-5 " id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 1200px">
+
+            <form action="users?view=edit" method="post">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Chỉnh sửa</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="idEdit" class="col-sm-2 col-form-label fw-medium">ID:</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly class="form-control-plaintext" id="idEdit" name="idEdit">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="userNameEdit" class="col-sm-2 col-form-label fw-medium">Tên:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="userNameEdit" name="userNameEdit">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="emailEdit" class="col-sm-2 col-form-label fw-medium">Email:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="emailEdit" name="emailEdit"> 
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="phoneEdit" class="col-sm-2 col-form-label fw-medium">Số điện thoại:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="phoneEdit" name="phoneEdit"> 
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="roleEdit" class="col-sm-2 col-form-label fw-medium">Vai trò:</label>
+                            <div class="col-sm-10">
+                                <select name="roleEdit" id="roleEdit" class="form-select">
+                                    <option value="0">Khách hàng</option>
+                                    <option value="1">Quản trị viên</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="dateEdit" class="col-sm-2 col-form-label fw-medium">Ngày tạo:</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly class="form-control-plaintext" id="dateEdit" name="dateEdit">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Thay đổi</button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- Modal Delete -->
+    <div class="modal fade mt-5 " id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="users?view=delete" method="post">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Xóa tài khoản</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3 row">
+                            <label for="dateEdit" class="col-sm-7 col-form-label">Bạn có chắc chắn xóa tài khoản có ID </label>
+                            <div class="col-sm-5">
+                                <input type="text" readonly class="form-control-plaintext fw-bold text-success" id="idDelete" name="idDelete"> 
+                            </div>
+                            <p class="text-center mt-5"><span class="fw-bold text-danger">Lưu ý:</span> Thao tác sẽ xóa tất cả các dữ liệu khác (tin nhắn, giỏ hàng,..) liên quan đến tài khoản này !</p>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
     <script>
-        function fnEdit(id, userEmail, content, status, date, uid) {
+        function fnEdit(id, name, email, phone, role, date) {
             document.getElementById("idEdit").value = id;
-            document.getElementById("userEmailEdit").value = userEmail;
-            document.getElementById("contentEdit").value = content;
-
-            if (status) {
-                document.getElementById("statusEdit").value = "1";
-            } else {
-                document.getElementById("statusEdit").value = "0";
-            }
-
-
+            document.getElementById("userNameEdit").value = name;
+            document.getElementById("emailEdit").value = email;
+            document.getElementById("phoneEdit").value = phone;
+            document.getElementById("roleEdit").value = role;
             document.getElementById("dateEdit").value = date;
         }
 

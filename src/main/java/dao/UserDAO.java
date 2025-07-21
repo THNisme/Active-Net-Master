@@ -7,9 +7,12 @@ package dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import model.Cart;
+import model.CartItem;
 import model.IO;
 import model.ManualPayment;
 import model.Message;
@@ -55,7 +58,9 @@ public class UserDAO extends DBContext {
                 u.setPasswordHash(pass_db);
                 u.setRole(role);
                 u.setCreatedAt(createdAt);
-//                User u = new User(id, name, email_db, phone, pass_db, role, createdAt);
+
+//              LOAD RELEVENT DATA OF USER 
+                u.setCart(loadCartByUserId(id));
                 u.setMessages(loadMessageByUserId(id));
                 u.setOrders(loadOrderByUserId(id));
             }
@@ -178,7 +183,45 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+    
+    
+    public void updateProfile(int id, String name, String email, String phone, String password_hash) {
+        String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [password_hash] = ?\n"
+                + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
 
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.setString(4, IO.hashMD5(password_hash));
+            ps.setInt(5, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
+        String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
+                + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.setInt(4, role);
+            ps.setDate(5, Date.valueOf(created_at));
+            ps.setInt(6, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try {
@@ -190,6 +233,66 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+    
+    
+    public void deleteAllData(int userId) {
+    String deleteManualPayments = "DELETE FROM manual_payments WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+    String deleteOrderItems = "DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+    String deleteOrders = "DELETE FROM orders WHERE user_id = ?";
+    String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = ?)";
+    String deleteCarts = "DELETE FROM carts WHERE user_id = ?";
+    String deleteMessages = "DELETE FROM messages WHERE users_id = ?";
+    String deleteUser = "DELETE FROM users WHERE id = ?";
+
+    try {
+        conn.setAutoCommit(false); // Bắt đầu transaction
+
+        PreparedStatement ps1 = conn.prepareStatement(deleteManualPayments);
+        ps1.setInt(1, userId);
+        ps1.executeUpdate();
+
+        PreparedStatement ps2 = conn.prepareStatement(deleteOrderItems);
+        ps2.setInt(1, userId);
+        ps2.executeUpdate();
+
+        PreparedStatement ps3 = conn.prepareStatement(deleteOrders);
+        ps3.setInt(1, userId);
+        ps3.executeUpdate();
+
+        PreparedStatement ps4 = conn.prepareStatement(deleteCartItems);
+        ps4.setInt(1, userId);
+        ps4.executeUpdate();
+
+        PreparedStatement ps5 = conn.prepareStatement(deleteCarts);
+        ps5.setInt(1, userId);
+        ps5.executeUpdate();
+
+        PreparedStatement ps6 = conn.prepareStatement(deleteMessages);
+        ps6.setInt(1, userId);
+        ps6.executeUpdate();
+
+        PreparedStatement ps7 = conn.prepareStatement(deleteUser);
+        ps7.setInt(1, userId);
+        ps7.executeUpdate();
+
+        conn.commit(); // Thành công → commit
+
+    } catch (Exception e) {
+        try {
+            conn.rollback(); // Lỗi → rollback
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        e.printStackTrace();
+    } finally {
+        try {
+            conn.setAutoCommit(true); // Trả lại trạng thái mặc định
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
 
     public List<Message> loadMessageByUserId(int userId) {
         String sql = "SELECT * FROM messages \n"
@@ -263,6 +366,43 @@ public class UserDAO extends DBContext {
         return list;
     }
 
+    public Cart loadCartByUserId(int userId) {
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id\n"
+                + "					  where users.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                Date createdAt = rs.getDate("created_at");
+                Date updatedAt = rs.getDate("updated_at");
+
+                int uid = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
+
+                Cart cart = new Cart(id, u, createdAt, updatedAt);
+              
+                List<CartItem> items = getItemsByCartId(id);
+                cart.setItems(items);
+                
+                return cart;
+            }
+        } catch (Exception e) {
+            System.out.println("getCartByUserId: " + e.getMessage());
+        }
+        return null;
+    }
+
 //    RELATION FUNCTION
     public List<OrderItem> loadOrderItemsByOrderId(int orderId) {
         String sql = "SELECT * FROM order_items \n"
@@ -327,19 +467,69 @@ public class UserDAO extends DBContext {
         return null;
     }
 
+    public List<CartItem> getItemsByCartId(int cartId) {
+        List<CartItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cartId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CartItem item = new CartItem();
+                item.setId(rs.getInt("id"));
+
+                Cart cart = new Cart();
+                cart.setId(cartId);
+                item.setCart(cart);
+
+                item.setItemType(rs.getString("item_type"));
+                item.setItemId(rs.getInt("item_id"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setUnitPrice(rs.getInt("unit_price"));
+                item.setAddedAt(rs.getDate("added_at"));
+
+                list.add(item);
+            }
+        } catch (Exception e) {
+            System.out.println("getItemsByCartId: " + e.getMessage());
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
 
-        User u = dao.login("admin@gmail.com", "123456");
+//        User u = dao.login("admin@gmail.com", "123456");
+        User u = dao.login("a@example.com", "123456");
 
+        System.out.println("------ U INFOR ------");
         System.out.println(u.getId());
         System.out.println(u.getName());
         System.out.println(u.getEmail());
-        System.out.println(u.getPhone());
-        System.out.println(u.getPasswordHash());
-        System.out.println(u.getRole());
-        System.out.println(u.getCreatedAt());
+        
+        
+        
+//       System.out.println(u.getPhone());
+//        System.out.println(u.getPasswordHash());
+//        System.out.println(u.getRole());
+//        System.out.println(u.getCreatedAt());
 
+        System.out.println("------ U CART ------");
+        Cart uCart = u.getCart();
+
+//        Cart testCart = dao.loadCartByUserId(1);
+        List<CartItem> uCartList = uCart.getItems();
+
+        for (CartItem i : uCartList) {
+            System.out.println(i.getItemId());
+            System.out.println(i.getItemType());
+            System.out.println(i.getQuantity());
+            System.out.println(i.getUnitPrice());
+        }
+
+//        Cart uCart = dao.getCartByUserId(1);
+//        System.out.println(uCart.getId());
+//        System.out.println(uCart.getCreatedAt());
 //        List<Order> orderList = u.getOrders();
 //
 //        for (Order m : orderList) {
