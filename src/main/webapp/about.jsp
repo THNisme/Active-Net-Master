@@ -46,7 +46,7 @@
                             <a href="home" class="nav-item-link">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.jsp" class="nav-item-link">
+                            <a href="about.jsp" class="nav-item-link active">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
                             <a href="product" class="nav-item-link">
@@ -280,7 +280,7 @@
         <div class="container">
             <h1 class="section-heading">Gửi <span class="section-heading-pink">lời nhắn</span> đến chúng tôi</h1>
             
-            <form action="messages?view=add" method="post" class="booking-form">
+            <form action="messages?view=add&hook=0" method="post" class="booking-form">
                 <img src="./assets/img/Logo-back-text.png" alt="">
                 <label for="messageInput">Để lại lời nhắn cho chúng tớ nhé:</label>
                 <textarea name="messageInput" id="messageInput" cols="80" rows="10" placeholder="Nhập lời nhắn của bạn"></textarea>

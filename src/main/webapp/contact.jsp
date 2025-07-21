@@ -98,7 +98,7 @@
                 <div class="container">
                     <h1 class="section-heading">Gửi <span class="section-heading-pink">lời nhắn</span> đến chúng tôi</h1>
 
-                    <form action="messages?view=add" method="post" class="booking-form">
+                    <form action="messages?view=add&hook=1" method="post" class="booking-form">
                         <img src="./assets/img/Logo-back-text.png" alt="">
                         <label for="messageInput">Để lại lời nhắn cho chúng tớ nhé:</label>
                         <textarea name="messageInput" id="messageInput" cols="80" rows="10"
