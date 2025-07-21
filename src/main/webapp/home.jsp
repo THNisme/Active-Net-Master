@@ -47,13 +47,13 @@
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home.jsp" class="nav-item-link active">
+                            <a href="home" class="nav-item-link">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.jsp" class="nav-item-link">
+                            <a href="about.jsp" class="nav-item-link active">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="shop.jsp" class="nav-item-link">
+                            <a href="product" class="nav-item-link">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
                             <a href="contact.jsp" class="nav-item-link">
@@ -285,15 +285,15 @@
                         <div class="container text-center">
                             <div class="row">
                                 <div class="ticket-wrapper">
-                                        <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
-                                        <p class="ticket-name pro"><%=p.getName()%></p>
-                                        <p class="price"><%=p.getPrice()%> VND</p>
-                                        <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
-                                    </div>
+                                    <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
+                                    <p class="ticket-name pro"><%=p.getName()%></p>
+                                    <p class="price"><%=p.getPrice()%> VND</p>
+                                    <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
+                                </div>
 
                                 <% }
-                                    i++;
-                                }%>
+                                        i++;
+                                    }%>
                             </div>
                         </div>
                     </div>
