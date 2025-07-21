@@ -81,9 +81,13 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         int role = 0;
         
+        UserDAO userDAO = new UserDAO();
         List<String> errorList = IO.userRegisterValidator(name, email, password, phone);
+        if (userDAO.emailHasExisted(email)) {
+            errorList.add("Email đã tồn tại");
+        }
         if (errorList.isEmpty() ) {
-            UserDAO userDAO = new UserDAO();
+            
         userDAO.create(name, email, phone, password, role);
         
         request.setAttribute("notify", "Tạo thành công");

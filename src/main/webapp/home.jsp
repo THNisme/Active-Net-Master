@@ -72,7 +72,7 @@
                         <%                        } else {
                         %>
                         <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
-                        <a href="user.jsp" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
                             <%                        }
                             %>
                     </div>

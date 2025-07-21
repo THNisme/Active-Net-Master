@@ -73,6 +73,8 @@
                                            <%
                                         }
                                     }
+            session.setAttribute("errorList", null);
+
                                 %>
 
                                 <div class="submit">

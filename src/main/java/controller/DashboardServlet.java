@@ -65,9 +65,10 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("user");
 
 //      LOGIN SUCCESS
-        if (session.getAttribute("user") != null) {
+        if (session.getAttribute("user") != null && u.getRole() == 1) {
 
             String view = request.getParameter("view");
 

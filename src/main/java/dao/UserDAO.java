@@ -98,6 +98,16 @@ public class UserDAO extends DBContext {
         return list;
     }
 
+    public boolean emailHasExisted(String email) {
+        List<User> list = getAll();
+        for (User user : list) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void create(String name, String email, String phone, String password_hash, int role) {
         String sql = "INSERT INTO [dbo].[users] ([name], [email], [phone], [password_hash], [role], [created_at]) \n"
                 + "VALUES(?, ?, ?, ?, ?, ?)";
@@ -183,7 +193,25 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    public void updateProfile(int id, String name, String email, String phone, String password_hash) {
+        String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [password_hash] = ?\n"
+                + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.setString(4, IO.hashMD5(password_hash));
+            ps.setInt(5, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
                 + "WHERE id = ?";
@@ -202,7 +230,7 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try {
@@ -214,66 +242,64 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-    
-    
+
     public void deleteAllData(int userId) {
-    String deleteManualPayments = "DELETE FROM manual_payments WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
-    String deleteOrderItems = "DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
-    String deleteOrders = "DELETE FROM orders WHERE user_id = ?";
-    String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = ?)";
-    String deleteCarts = "DELETE FROM carts WHERE user_id = ?";
-    String deleteMessages = "DELETE FROM messages WHERE users_id = ?";
-    String deleteUser = "DELETE FROM users WHERE id = ?";
+        String deleteManualPayments = "DELETE FROM manual_payments WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+        String deleteOrderItems = "DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)";
+        String deleteOrders = "DELETE FROM orders WHERE user_id = ?";
+        String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE user_id = ?)";
+        String deleteCarts = "DELETE FROM carts WHERE user_id = ?";
+        String deleteMessages = "DELETE FROM messages WHERE users_id = ?";
+        String deleteUser = "DELETE FROM users WHERE id = ?";
 
-    try {
-        conn.setAutoCommit(false); // Bắt đầu transaction
-
-        PreparedStatement ps1 = conn.prepareStatement(deleteManualPayments);
-        ps1.setInt(1, userId);
-        ps1.executeUpdate();
-
-        PreparedStatement ps2 = conn.prepareStatement(deleteOrderItems);
-        ps2.setInt(1, userId);
-        ps2.executeUpdate();
-
-        PreparedStatement ps3 = conn.prepareStatement(deleteOrders);
-        ps3.setInt(1, userId);
-        ps3.executeUpdate();
-
-        PreparedStatement ps4 = conn.prepareStatement(deleteCartItems);
-        ps4.setInt(1, userId);
-        ps4.executeUpdate();
-
-        PreparedStatement ps5 = conn.prepareStatement(deleteCarts);
-        ps5.setInt(1, userId);
-        ps5.executeUpdate();
-
-        PreparedStatement ps6 = conn.prepareStatement(deleteMessages);
-        ps6.setInt(1, userId);
-        ps6.executeUpdate();
-
-        PreparedStatement ps7 = conn.prepareStatement(deleteUser);
-        ps7.setInt(1, userId);
-        ps7.executeUpdate();
-
-        conn.commit(); // Thành công → commit
-
-    } catch (Exception e) {
         try {
-            conn.rollback(); // Lỗi → rollback
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        e.printStackTrace();
-    } finally {
-        try {
-            conn.setAutoCommit(true); // Trả lại trạng thái mặc định
-        } catch (SQLException e) {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            PreparedStatement ps1 = conn.prepareStatement(deleteManualPayments);
+            ps1.setInt(1, userId);
+            ps1.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement(deleteOrderItems);
+            ps2.setInt(1, userId);
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 = conn.prepareStatement(deleteOrders);
+            ps3.setInt(1, userId);
+            ps3.executeUpdate();
+
+            PreparedStatement ps4 = conn.prepareStatement(deleteCartItems);
+            ps4.setInt(1, userId);
+            ps4.executeUpdate();
+
+            PreparedStatement ps5 = conn.prepareStatement(deleteCarts);
+            ps5.setInt(1, userId);
+            ps5.executeUpdate();
+
+            PreparedStatement ps6 = conn.prepareStatement(deleteMessages);
+            ps6.setInt(1, userId);
+            ps6.executeUpdate();
+
+            PreparedStatement ps7 = conn.prepareStatement(deleteUser);
+            ps7.setInt(1, userId);
+            ps7.executeUpdate();
+
+            conn.commit(); // Thành công → commit
+
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // Lỗi → rollback
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+        } finally {
+            try {
+                conn.setAutoCommit(true); // Trả lại trạng thái mặc định
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
-
 
     public List<Message> loadMessageByUserId(int userId) {
         String sql = "SELECT * FROM messages \n"
@@ -372,10 +398,10 @@ public class UserDAO extends DBContext {
                 User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
 
                 Cart cart = new Cart(id, u, createdAt, updatedAt);
-              
+
                 List<CartItem> items = getItemsByCartId(id);
                 cart.setItems(items);
-                
+
                 return cart;
             }
         } catch (Exception e) {
@@ -487,14 +513,11 @@ public class UserDAO extends DBContext {
         System.out.println(u.getId());
         System.out.println(u.getName());
         System.out.println(u.getEmail());
-        
-        
-        
+
 //       System.out.println(u.getPhone());
 //        System.out.println(u.getPasswordHash());
 //        System.out.println(u.getRole());
 //        System.out.println(u.getCreatedAt());
-
         System.out.println("------ U CART ------");
         Cart uCart = u.getCart();
 

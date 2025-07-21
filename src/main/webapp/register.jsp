@@ -94,15 +94,15 @@
                                 %>
                                 <p class="text-danger"><%=notify%></p>
                                 <%
-                                    } else {
+                                } else {
                                 %>
                                 <%
-                                     List<String> errorList = (List<String>) session.getAttribute("errorList");
+                                    List<String> errorList = (List<String>) session.getAttribute("errorList");
                                     if (errorList != null && !errorList.isEmpty()) {
                                         for (String err : errorList) {
-                                           %>
-                                           <p><%=err%></p>
-                                           <%
+                                %>
+                                <p><%=err%></p>
+                                <%
                                         }
                                     }
                                 %>
@@ -110,7 +110,9 @@
                                     <button type="submit" class="btn primary-btn">Tạo</button>
                                 </div>
                                 <%
-                                    } 
+                                    }
+                                    session.setAttribute("errorList", null);
+
                                 %>
                             </form>
 
