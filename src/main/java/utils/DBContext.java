@@ -23,18 +23,18 @@ public class DBContext {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 //          dbURL mặc định
-//            String dbURL = "jdbc:sqlserver://localhost:1433;"
-//                    + "databaseName=Active_Net_Master;"
-//                    + "user=sa;"
-//                    + "password=123456;"
-//                    + "encrypt=true;trustServerCertificate=true;";
-
-         // dbURL của Tính
             String dbURL = "jdbc:sqlserver://localhost:1433;"
                     + "databaseName=Active_Net_Master;"
                     + "user=sa;"
-                    + "password=688464672;"
+                    + "password=123456;"
                     + "encrypt=true;trustServerCertificate=true;";
+
+//         // dbURL của Tính
+//            String dbURL = "jdbc:sqlserver://localhost:1433;"
+//                    + "databaseName=Active_Net_Master;"
+//                    + "user=sa;"
+//                    + "password=688464672;"
+//                    + "encrypt=true;trustServerCertificate=true;";
             conn = DriverManager.getConnection(dbURL);
             if (conn != null) {
                 DatabaseMetaData dm = (DatabaseMetaData) conn.getMetaData();

@@ -182,7 +182,9 @@
                                     <p class="ticket-name"><%= p.getName()%></p>
                                     <p class="ticket-time"></p>
                                     <p class="price"><%= String.format("%,d", p.getPrice())%> VND</p>
-                                    <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
+                                    <a href="single?id=${product.id}&type=product" class="btn primary-btn buy">
+                                        <i class="bi bi-bag"></i>
+                                    </a>
                                 </div>
                             </div>
                             <%
@@ -195,17 +197,17 @@
                             %>
                         </div>
                     </div>
-                        <div class="dots-pagination-horizontal">
-                            <button class="btn btn-outline-danger rounded-circle dot-arrow prev">
-                                <i class="bi bi-chevron-left"></i>
-                            </button>
+                    <div class="dots-pagination-horizontal">
+                        <button class="btn btn-outline-danger rounded-circle dot-arrow prev">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
 
-                            <div class="dots"></div>
+                        <div class="dots"></div>
 
-                            <button class="btn btn-outline-danger rounded-circle dot-arrow next">
-                                <i class="bi bi-chevron-right"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-outline-danger rounded-circle dot-arrow next">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
         </section>
 

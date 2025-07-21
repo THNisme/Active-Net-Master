@@ -114,6 +114,12 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("currentCategory", category != null ? category : "all");
         request.setAttribute("currentSort", sort != null ? sort : "");
         request.getRequestDispatcher("shop.jsp").forward(request, response);
+
+        String productId = request.getParameter("id");
+        String productType = "product";  // Assuming it’s a product
+        if (productId != null) {
+            response.sendRedirect("single?id=" + productId + "&type=" + productType);
+        }
     }
 
     /**
