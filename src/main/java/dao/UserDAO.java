@@ -193,12 +193,6 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-<<<<<<< HEAD
-
-=======
-    
-    
->>>>>>> a7ed1da17a0a3f23fcf003b65f784ce27a64a80a
     public void updateProfile(int id, String name, String email, String phone, String password_hash) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [password_hash] = ?\n"
                 + "WHERE id = ?";
@@ -216,11 +210,6 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> a7ed1da17a0a3f23fcf003b65f784ce27a64a80a
     public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
         String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
                 + "WHERE id = ?";
