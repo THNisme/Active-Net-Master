@@ -79,29 +79,38 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("user");
         String pass = request.getParameter("pass");
 
-        UserDAO dao = new UserDAO();
-        User u = dao.login(user, pass);
+        List<String> errorList = IO.userLoginValidator(user, pass);
+        HttpSession session = request.getSession();
 
-        if (u.getId() != -1) {
+        if (!errorList.isEmpty()) {
 
-            if (u.getRole() == 1) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", u);
-                response.sendRedirect("dashboard");
-            } else {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", u);
-                response.sendRedirect("home");
-            }
-
-        } else {
-            List<String> errorList = IO.userLoginValidator(user, pass);
-
-            HttpSession session = request.getSession();
             session.setAttribute("errorList", errorList);
             response.sendRedirect("login");
-        }
+        } else {
 
+            UserDAO dao = new UserDAO();
+            User u = dao.login(user, pass);
+
+            if (u.getId() != -1) {
+
+                if (u.getRole() == 1) {
+                    session = request.getSession();
+                    session.setAttribute("user", u);
+                    session.setAttribute("errorList", null);
+                    response.sendRedirect("dashboard");
+                } else {
+                    session = request.getSession();
+                    session.setAttribute("user", u);
+                    session.setAttribute("errorList", null);
+                    response.sendRedirect("home");
+                }
+
+            } else {
+                errorList.add("Email hoặc mật khẩu sai");
+                session.setAttribute("errorList", errorList);
+                response.sendRedirect("login");
+            }
+        }
     }
 
     /**

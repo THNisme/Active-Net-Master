@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,13 +94,25 @@
                                 %>
                                 <p class="text-danger"><%=notify%></p>
                                 <%
-                                    } else {
+                                } else {
+                                %>
+                                <%
+                                    List<String> errorList = (List<String>) session.getAttribute("errorList");
+                                    if (errorList != null && !errorList.isEmpty()) {
+                                        for (String err : errorList) {
+                                %>
+                                <p><%=err%></p>
+                                <%
+                                        }
+                                    }
                                 %>
                                 <div class="submit">
                                     <button type="submit" class="btn primary-btn">Tạo</button>
                                 </div>
                                 <%
-                                    } 
+                                    }
+                                    session.setAttribute("errorList", null);
+
                                 %>
                             </form>
 
