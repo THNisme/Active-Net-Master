@@ -96,12 +96,11 @@ public class LoginServlet extends HttpServlet {
 
             
         } else {
-//            List<String> errorList = IO.userLoginValidator(user, pass);
-//            request.setAttribute("errorList", errorList);
-//            request.getRequestDispatcher("login").forward(request, response);
+            List<String> errorList = IO.userLoginValidator(user, pass);
+            
 
             HttpSession session = request.getSession();
-            session.setAttribute("err", "Email or password is incorrect !");
+            session.setAttribute("errorList", errorList);
             response.sendRedirect("login");
         }
 

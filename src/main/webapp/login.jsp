@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -64,9 +65,13 @@
                                 </div>
 
                                 <%
-                                    if (session.getAttribute("err") != null) {
-                                        String res = (String) session.getAttribute("err");
-                                        out.println("<p>" + res + "</p>");
+                                     List<String> errorList = (List<String>) session.getAttribute("errorList");
+                                    if (errorList != null && !errorList.isEmpty()) {
+                                        for (String err : errorList) {
+                                           %>
+                                           <p><%=err%></p>
+                                           <%
+                                        }
                                     }
                                 %>
 
@@ -80,7 +85,7 @@
                     <!-- Sign-up link -->
                     <div class="signup-wrapper">
                         <p>
-                            <a href="register.html" class="signup-link">Đăng kí tài khoản</a>
+                            <a href="register" class="signup-link">Đăng kí tài khoản</a>
                         </p>
                     </div>
                 </div>

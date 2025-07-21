@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="model.IO"%>
 <%@page import="model.Product"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.Ticket"%>
@@ -138,7 +139,7 @@
                                         <img src="<%=t.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name">Vé sự kiện “<%=t.getName()%>”</p>
                                         <p class="ticket-time"><%=t.getEvent().getDate()%></p>
-                                        <p class="price"><%=t.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(t.getPrice() + "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -154,7 +155,7 @@
                                         <img src="<%=t.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name">Vé sự kiện “<%=t.getName()%>”</p>
                                         <p class="ticket-time"><%=t.getEvent().getDate()%></p>
-                                        <p class="price"><%=t.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(t.getPrice() + "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -273,7 +274,7 @@
                                     <div class="ticket-wrapper">
                                         <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
                                         <p class="ticket-name pro"><%=p.getName()%></p>
-                                        <p class="price"><%=p.getPrice()%> VND</p>
+                                        <p class="price"><%=IO.formatCurrency(p.getPrice()+ "")%> VND</p>
                                         <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                     </div>
                                 </div>
@@ -287,7 +288,7 @@
                                 <div class="ticket-wrapper">
                                     <img src="<%=p.getImageUrl()%>" class="li-img" alt="...">
                                     <p class="ticket-name pro"><%=p.getName()%></p>
-                                    <p class="price"><%=p.getPrice()%> VND</p>
+                                    <p class="price"><%=IO.formatCurrency(p.getPrice()+ "")%> VND</p>
                                     <a href="#" class="btn primary-btn buy"><i class="bi bi-bag"></i></a>
                                 </div>
 
