@@ -124,11 +124,12 @@
                                     Người dùng
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="dashboard?view=users">Quản lý người dùng</a></li>
+                                    <li><a class="dropdown-item" href="users">Quản lý người dùng</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="dashboard?view=messages">Tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages">Tất cả tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages?view=inbox">Tin nhắn chưa đọc</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -175,8 +176,8 @@
                             <td><%=m.getReleaseDate()%></td>
                             <td>
                                 <div class="table-tools-wrapper text-center">
-                                    <a onclick="fnEdit('<%=m.getId()%>', '<%=m.getUser().getEmail()%>', '<%=m.getContent()%>', '<%=m.isReaded()%>', '<%=m.getReleaseDate()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
-                                    <a href="dashboard?view=delete&id=<%=m.getId()%>" class="btn primary-btn"><i class="bi bi-trash3"></i></a>
+                                    <a onclick="fnEdit('<%=m.getId()%>', '<%=m.getUser().getEmail()%>', '<%=m.getContent()%>', <%=m.isReaded()%>, '<%=m.getReleaseDate()%>', '<%=m.getUser().getId()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
+                                    <a onclick="fnDelete('<%=m.getId()%>')" class="btn primary-btn"><i class="bi bi-trash3" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -224,7 +225,7 @@
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog" style="min-width: 1200px">
 
-                <form action="messages" method="post">
+                <form action="messages?view=edit" method="post">
                     <div class="modal-content">
 
                         <div class="modal-header">
@@ -283,27 +284,63 @@
             </div>
         </div>
 
-        <script>
-            function fnEdit(id, userEmail, content, status, date) {
-                document.getElementById("idEdit").value = id;
-                document.getElementById("userEmailEdit").value = userEmail;
-                document.getElementById("contentEdit").value = content;
 
-                if (status) {
-                    document.getElementById("statusEdit").value = "1";
-                } else {
-                   document.getElementById("statusEdit").value = "0"; 
-                }
+        <!-- Modal Delete -->
+        <div class="modal fade mt-5 " id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="messages?view=delete" method="post">
+                    <div class="modal-content">
 
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Xóa tin nhắn</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
 
-                document.getElementById("dateEdit").value = date;
+                        <div class="modal-body">
+                            
+                            <div class="mb-3 row">
+                                <label for="dateEdit" class="col-sm-6 col-form-label">Bạn có chắc chắn xóa tin nhắn </label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext fw-medium" id="idDelete" name="idDelete"> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fnEdit(id, userEmail, content, status, date, uid) {
+            document.getElementById("idEdit").value = id;
+            document.getElementById("userEmailEdit").value = userEmail;
+            document.getElementById("contentEdit").value = content;
+
+            if (status) {
+                document.getElementById("statusEdit").value = "1";
+            } else {
+                document.getElementById("statusEdit").value = "0";
             }
-        </script>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous"></script>
-    </body>
+            document.getElementById("dateEdit").value = date;
+        }
+
+        function fnDelete(id) {
+            document.getElementById("idDelete").value = id;
+        }
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+</body>
 
 </html>

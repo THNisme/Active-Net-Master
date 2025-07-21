@@ -101,6 +101,7 @@
 
 
 .btn-nav-login {
+    margin-left: 10px;
     display: none;
     float: right;
 }

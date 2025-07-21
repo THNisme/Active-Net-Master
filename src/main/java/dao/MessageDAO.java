@@ -61,7 +61,7 @@ public class MessageDAO extends DBContext {
         return list;
     }
 
-    public void create(int userId, String content, boolean readed) {
+    public void create(int userId, String content) {
         String sql = "INSERT INTO [dbo].[messages] ([users_id],[content],[readed],[release_date]) \n"
                 + "VALUES(?, ?, ?, ?)";
         try {
@@ -71,7 +71,7 @@ public class MessageDAO extends DBContext {
             //      ps.setInt(1, nextId);
             ps.setInt(1, userId);
             ps.setString(2, content);
-            ps.setBoolean(3, readed);
+            ps.setBoolean(3, false);
             ps.setDate(4, Date.valueOf(LocalDate.now()));
 
             ps.executeUpdate();
@@ -161,6 +161,50 @@ public class MessageDAO extends DBContext {
         }
     }
     
+    
+    public List<Message> getAllUnreaded() {
+        String sql = "SELECT   messages.*, users.name, users.phone, users.email, users.password_hash, users.role, users.created_at \n"
+                + "FROM	messages INNER JOIN \n"
+                + "users ON messages.users_id = users.id \n"
+                + "WHERE readed = ?";
+
+        List<Message> list = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            ps.setBoolean(1, false);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            
+
+            while (rs.next()) {
+                int idMess = rs.getInt("id");
+                int userId = rs.getInt("users_id");
+                String content = rs.getString("content");
+                boolean readed = rs.getBoolean("readed");
+                Date realeaseDate = rs.getDate("release_date");
+
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date createdAt = rs.getDate("created_at");
+
+                User u = new User(userId, name, email_db, phone, pass_db, role, createdAt);
+
+                Message message = new Message(idMess, u, content, readed, realeaseDate);
+                list.add(message);
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
     public static void main(String[] args) {
         MessageDAO dao = new MessageDAO();
 //        dao.delete(7);
@@ -169,7 +213,7 @@ public class MessageDAO extends DBContext {
 ////        
         List<Message> list = new ArrayList<>();
 
-        list = dao.getAll();
+        list = dao.getAllUnreaded();
 
         for (Message m : list) {
             System.out.println(m.getId());
