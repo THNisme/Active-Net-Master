@@ -182,7 +182,26 @@ public class UserDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+    
+    public void updateDashboard(int id, String name, String email, String phone, int role, String created_at) {
+        String sql = "UPDATE [dbo].[users] SET [name] = ?, [email] = ?, [phone] = ?, [role] = ?, [created_at] = ? \n"
+                + "WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
 
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.setInt(4, role);
+            ps.setDate(5, Date.valueOf(created_at));
+            ps.setInt(6, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
         try {

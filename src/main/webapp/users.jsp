@@ -182,7 +182,7 @@
                             <td><%=uItem.getCreatedAt()%></td>
                             <td>
                                 <div class="table-tools-wrapper text-center">
-                                    <a onclick="" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
+                                    <a onclick="fnEdit('<%=uItem.getId()%>', '<%=uItem.getName()%>', '<%=uItem.getEmail()%>', '<%=uItem.getPhone()%>', '<%=uItem.getRole()%>', '<%=uItem.getCreatedAt()%>')" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i></a>
                                     <a onclick="fnDelete('<%=uItem.getId()%>')" class="btn primary-btn"><i class="bi bi-trash3" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
                                 </div>
                             </td>
@@ -241,7 +241,7 @@
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog" style="min-width: 1200px">
 
-            <form action="messages?view=edit" method="post">
+            <form action="users?view=edit" method="post">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -258,31 +258,38 @@
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="userEmailEdit" class="col-sm-2 col-form-label fw-medium">Gửi từ:</label>
+                            <label for="userNameEdit" class="col-sm-2 col-form-label fw-medium">Tên:</label>
                             <div class="col-sm-10">
-                                <input type="text" readonly class="form-control-plaintext" id="userEmailEdit" name="userEmailEdit">
+                                <input type="text" class="form-control" id="userNameEdit" name="userNameEdit">
                             </div>
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="contentDisplay" class="col-sm-2 col-form-label fw-medium">Nội dung:</label>
+                            <label for="emailEdit" class="col-sm-2 col-form-label fw-medium">Email:</label>
                             <div class="col-sm-10">
-                                <input type="text" readonly class="form-control-plaintext" id="contentEdit" name="contentEdit"> 
+                                <input type="text" class="form-control" id="emailEdit" name="emailEdit"> 
                             </div>
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="statusEdit" class="col-sm-2 col-form-label fw-medium">Trạng thái:</label>
+                            <label for="phoneEdit" class="col-sm-2 col-form-label fw-medium">Số điện thoại:</label>
                             <div class="col-sm-10">
-                                <select name="statusEdit" id="statusEdit" class="form-select">
-                                    <option value="0">Chưa đọc</option>
-                                    <option value="1">Đã đọc</option>
+                                <input type="text" class="form-control" id="phoneEdit" name="phoneEdit"> 
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="roleEdit" class="col-sm-2 col-form-label fw-medium">Vai trò:</label>
+                            <div class="col-sm-10">
+                                <select name="roleEdit" id="roleEdit" class="form-select">
+                                    <option value="0">Khách hàng</option>
+                                    <option value="1">Quản trị viên</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="dateEdit" class="col-sm-2 col-form-label fw-medium">Ngày gửi:</label>
+                            <label for="dateEdit" class="col-sm-2 col-form-label fw-medium">Ngày tạo:</label>
                             <div class="col-sm-10">
                                 <input type="text" readonly class="form-control-plaintext" id="dateEdit" name="dateEdit">
                             </div>
@@ -333,18 +340,12 @@
 </div>
 
 <script>
-    function fnEdit(id, userEmail, content, status, date, uid) {
+    function fnEdit(id, name, email, phone, role, date) {
         document.getElementById("idEdit").value = id;
-        document.getElementById("userEmailEdit").value = userEmail;
-        document.getElementById("contentEdit").value = content;
-
-        if (status) {
-            document.getElementById("statusEdit").value = "1";
-        } else {
-            document.getElementById("statusEdit").value = "0";
-        }
-
-
+        document.getElementById("userNameEdit").value = name;
+        document.getElementById("emailEdit").value = email;
+        document.getElementById("phoneEdit").value = phone;
+        document.getElementById("roleEdit").value = role;
         document.getElementById("dateEdit").value = date;
     }
 

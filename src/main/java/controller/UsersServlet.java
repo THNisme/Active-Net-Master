@@ -109,16 +109,16 @@ public class UsersServlet extends HttpServlet {
 
         if (view.equalsIgnoreCase("edit")) {
             int id = Integer.parseInt(request.getParameter("idEdit"));
-            int statusInt = Integer.parseInt(request.getParameter("statusEdit"));
-            boolean status = false;
+            String name = request.getParameter("userNameEdit");
+            String email = request.getParameter("emailEdit");
+            String phone = request.getParameter("phoneEdit");
+            int role = Integer.parseInt(request.getParameter("roleEdit"));
+            String date = request.getParameter("dateEdit");
+            
 
-            if (statusInt == 1) {
-                status = true;
-            }
-
-            MessageDAO mesDao = new MessageDAO();
-            mesDao.checkReaded(id, status);
-            response.sendRedirect("messages");
+            UserDAO userDao = new UserDAO();
+            userDao.updateDashboard(id, name, email, phone, role, date);
+            response.sendRedirect("users");
         } else if (view.equalsIgnoreCase("delete")) {
             int id = Integer.parseInt(request.getParameter("idDelete"));
             UserDAO userDao = new UserDAO();
