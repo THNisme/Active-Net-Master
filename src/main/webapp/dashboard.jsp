@@ -41,12 +41,12 @@
 
                 <div class="dashboard-nav-wrapper">
                     <img src="./assets/img/logo/fac/LogoA-trans.png" alt="">
-                    <a class="navbar-brand dashboard-nav-brand" href="#">
-                         Welcome, <%User u = (User) session.getAttribute("user");
+                    <a class="navbar-brand dashboard-nav-brand" href="dashboard">
+                        Welcome, <%User u = (User) session.getAttribute("user");
                             out.println(u.getName());
                         %>
                     </a>
-                    
+
                     <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                 </div>
                 <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="offcanvasNavbar"
@@ -119,7 +119,8 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="messages">Tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages">Tất cả tin nhắn</a></li>
+                                    <li><a class="dropdown-item" href="messages?view=inbox">Tin nhắn chưa đọc</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -133,7 +134,7 @@
         <section class="dashboard-content container">
             <h1 class="section-heading">Chào mừng đến với <span class="section-heading-pink">Active-Net-Admin</span></h1>
 
-            
+
 
 
         </section>

@@ -52,11 +52,12 @@
 
                 <div class="dashboard-nav-wrapper">
                     <img src="./assets/img/logo/fac/LogoA-trans.png" alt="">
-                    <a class="navbar-brand dashboard-nav-brand" href="#">
+                    <a class="navbar-brand dashboard-nav-brand" href="dashboard">
                         Welcome, <%User u = (User) session.getAttribute("user");
                             out.println(u.getName());
                         %>
                     </a>
+                    <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                 </div>
                 <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="offcanvasNavbar"
                      aria-labelledby="offcanvasNavbarLabel">

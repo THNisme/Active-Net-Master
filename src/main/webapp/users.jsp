@@ -43,21 +43,22 @@
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         <button class="btn primary-btn" type="submit"><i class="bi bi-search"></i></button>
                     </form>
-                    
+
                     <a href="register" class="btn primary-btn"><i class="bi bi-plus-circle"></i></a>
-<!--                    <button type="button" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#addNewModal">
-                        <i class="bi bi-plus-circle"></i>
-                    </button>-->
+                    <!--                    <button type="button" class="btn primary-btn" data-bs-toggle="modal" data-bs-target="#addNewModal">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </button>-->
                 </div>
 
 
                 <div class="dashboard-nav-wrapper">
                     <img src="./assets/img/logo/fac/LogoA-trans.png" alt="">
-                    <a class="navbar-brand dashboard-nav-brand" href="#">
+                    <a class="navbar-brand dashboard-nav-brand" href="dashboard">
                         Welcome, <%User u = (User) session.getAttribute("user");
                             out.println(u.getName());
                         %>
                     </a>
+                    <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                 </div>
                 <div class="offcanvas offcanvas-start dashboard-offcanvas" tabindex="-1" id="offcanvasNavbar"
                      aria-labelledby="offcanvasNavbarLabel">
@@ -171,11 +172,11 @@
                             <td><%=uItem.getPhone()%></td>
                             <td><%
                                 if (uItem.getRole() == 0) {
-                                    out.println("<p>" + "Khách hàng" + "</p>");
+                                    out.println("<p style='margin-bottom: 0'>" + "Khách hàng" + "</p>");
                                 } else if (uItem.getRole() == 1) {
-                                    out.println("<p>" + "Quản trị viên" + "</p>");
+                                    out.println("<p style='margin-bottom: 0'>" + "Quản trị viên" + "</p>");
                                 } else {
-                                    out.println("<p>" + "Không xác định" + "</p>");
+                                    out.println("<p style='margin-bottom: 0'>" + "Không xác định" + "</p>");
                                 }
                                 %></td>
                             <td><%=uItem.getCreatedAt()%></td>
@@ -212,7 +213,7 @@
                         </div>
 
                         <div class="modal-body">
-                            
+
                             <div class="mb-3 row">
                                 <label for="idAdd" class="col-sm-2 col-form-label fw-medium">Tên:</label>
                                 <div class="col-sm-10">
