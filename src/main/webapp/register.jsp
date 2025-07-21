@@ -108,7 +108,7 @@
                     <!-- Sign-up link -->
                     <div class="login-wrapper">
                         <p>
-                            <a href="login.jsp" class="login-link">Đăng nhập</a>
+                            <a href="login" class="login-link">Đăng nhập</a>
                         </p>
                     </div>
                 </div>
