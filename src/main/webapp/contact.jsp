@@ -38,7 +38,7 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-3">
-                        <a class="nav-logo-link" href="#">
+                        <a class="nav-logo-link" href="">
                             <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
                         </a>
                     </div>
@@ -50,10 +50,10 @@
                             <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="product" class="nav-item-link">
+                            <a href="product" class="nav-item-link active">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
-                            <a href="contact" class="nav-item-link active">
+                            <a href="contact" class="nav-item-link">
                                 <li class="nav-list-item">Liên hệ</li>
                             </a>
                         </ul>
@@ -69,6 +69,8 @@
                         %>
                         <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                         <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="cart" class="btn primary-btn btn-nav-login active"><i class="bi bi-bag"></i></a>
+                        
                             <%                        }
                             %>
                     </div>

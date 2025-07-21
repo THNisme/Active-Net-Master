@@ -1,3 +1,4 @@
+<%@page import="model.User"%>
 <%@page import="model.IO"%>
 <%@ page import="java.util.List" %>
 <%@ page import="model.CartItem" %>
@@ -34,21 +35,41 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-3">
-                        <a class="nav-logo-link" href="#">
+                        <a class="nav-logo-link" href="">
                             <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
                         </a>
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home.html" class="nav-item-link"><li class="nav-list-item">Trang chủ</li></a>
-                            <a href="about.html" class="nav-item-link"><li class="nav-list-item">Giới thiệu</li></a>
-                            <a href="shop.html" class="nav-item-link"><li class="nav-list-item">Cửa hàng</li></a>
-                            <a href="contact.html" class="nav-item-link"><li class="nav-list-item">Liên hệ</li></a>
+                            <a href="home" class="nav-item-link">
+                                <li class="nav-list-item">Trang chủ</li>
+                            </a>
+                            <a href="about" class="nav-item-link">
+                                <li class="nav-list-item">Giới thiệu</li>
+                            </a>
+                            <a href="product" class="nav-item-link">
+                                <li class="nav-list-item">Cửa hàng</li>
+                            </a>
+                            <a href="contact" class="nav-item-link">
+                                <li class="nav-list-item">Liên hệ</li>
+                            </a>
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <a href="#" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
-                        <a href="#" class="btn primary-btn btn-nav-login"><i class="bi bi-person-circle"></i></a>
+                        <%
+                            User d = (User) session.getAttribute("user");
+                            if (d == null) {
+
+                        %>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <%                        } else {
+                        %>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                        <a href="cart" class="btn primary-btn btn-nav-login active"><i class="bi bi-bag"></i></a>
+                        
+                            <%                        }
+                            %>
                     </div>
                 </div>
         </nav>

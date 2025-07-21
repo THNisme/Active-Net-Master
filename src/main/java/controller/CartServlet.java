@@ -109,26 +109,26 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if ("checkout".equalsIgnoreCase(action)) {
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("user");
-
-            int userId = user.getId();
-
-            CartDAO cartDAO = new CartDAO();
-
-            OrderDAO orderDAO = new OrderDAO();
-            int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
-            String bankTransferNote = request.getParameter("bankTransferNote");
-
-            orderDAO.create(userId, totalAmount, bankTransferNote);
-
-            cartDAO.delete(userId);
-
-            // 3. Chuyển hướng sau khi thanh toán
-            request.getRequestDispatcher("order-success.jsp").forward(request, response);
-        }
+//        String action = request.getParameter("action");
+//        if ("checkout".equalsIgnoreCase(action)) {
+//            HttpSession session = request.getSession();
+//            User user = (User) session.getAttribute("user");
+//
+//            int userId = user.getId();
+//
+//            CartDAO cartDAO = new CartDAO();
+//
+//            OrderDAO orderDAO = new OrderDAO();
+//            int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
+//            String bankTransferNote = request.getParameter("bankTransferNote");
+//
+//            orderDAO.create(userId, totalAmount, bankTransferNote);
+//
+//            cartDAO.delete(userId);
+//
+//            // 3. Chuyển hướng sau khi thanh toán
+//            request.getRequestDispatcher("order-success.jsp").forward(request, response);
+//        }
 
     }
 
