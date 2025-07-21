@@ -4,6 +4,7 @@
     Author     : BACH YEN
 --%>
 
+<%@page import="model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -33,12 +34,43 @@
 
 <body>
     <nav class="navbar nav-bg">
-        <div class="container">
-            <div class="row nav-wrapper">
-                <div class="col-md-3">
-                    <a class="nav-logo-link" href="#">
-                        <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
-                    </a>
+            <div class="container">
+                <div class="row nav-wrapper">
+                    <div class="col-md-3">
+                        <a class="nav-logo-link" href="#">
+                            <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="nav-list">
+                            <a href="home" class="nav-item-link">
+                                <li class="nav-list-item">Trang chủ</li>
+                            </a>
+                            <a href="about.jsp" class="nav-item-link active">
+                                <li class="nav-list-item">Giới thiệu</li>
+                            </a>
+                            <a href="product" class="nav-item-link">
+                                <li class="nav-list-item">Cửa hàng</li>
+                            </a>
+                            <a href="contact.jsp" class="nav-item-link">
+                                <li class="nav-list-item">Liên hệ</li>
+                            </a>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <%
+                            User d = (User) session.getAttribute("user");
+                            if (d == null) {
+
+                        %>
+                        <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                        <%                        } else {
+                        %>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
+                        <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
+                            <%                        }
+                            %>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <ul class="nav-list">
@@ -269,7 +301,7 @@
         <div class="container">
             <h1 class="section-heading">Gửi <span class="section-heading-pink">lời nhắn</span> đến chúng tôi</h1>
             
-            <form action="" method="post" class="booking-form">
+            <form action="messages?view=add&hook=0" method="post" class="booking-form">
                 <img src="./assets/img/Logo-back-text.png" alt="">
                 <label for="messageInput">Để lại lời nhắn cho chúng tớ nhé:</label>
                 <textarea name="messageInput" id="messageInput" cols="80" rows="10" placeholder="Nhập lời nhắn của bạn"></textarea>
