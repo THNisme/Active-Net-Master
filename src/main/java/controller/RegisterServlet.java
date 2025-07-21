@@ -12,6 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.IO;
 
 /**
  *
@@ -78,11 +81,19 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         int role = 0;
         
-        UserDAO userDAO = new UserDAO();
+        List<String> errorList = IO.userRegisterValidator(name, email, password, phone);
+        if (errorList.isEmpty() ) {
+            UserDAO userDAO = new UserDAO();
         userDAO.create(name, email, phone, password, role);
         
         request.setAttribute("notify", "Tạo thành công");
         request.getRequestDispatcher("register.jsp").forward(request, response);
+        } else {
+            HttpSession session = request.getSession();
+            session.setAttribute("errorList", errorList);
+            response.sendRedirect("register");
+        }
+        
     }
 
     /**
