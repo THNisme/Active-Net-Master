@@ -8,8 +8,6 @@ package dao;
  *
  * @author Lê Hữu Tính - CE190016
  */
-
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -26,7 +24,8 @@ public class CartItemDAO extends DBContext {
 
     public List<CartItem> getAll() {
         List<CartItem> list = new ArrayList<>();
-        String sql = "SELECT * FROM cart_items";
+        String sql = "SELECT ci.*, p.name AS product_name \n"
+                + "FROM cart_items ci JOIN products p ON ci.item_id = p.id;";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -43,7 +42,7 @@ public class CartItemDAO extends DBContext {
                 item.setQuantity(rs.getInt("quantity"));
                 item.setUnitPrice(rs.getInt("unit_price"));
                 item.setAddedAt(rs.getDate("added_at"));
-
+                item.setProductName(rs.getString("product_name"));
                 list.add(item);
             }
         } catch (Exception e) {
@@ -51,40 +50,39 @@ public class CartItemDAO extends DBContext {
         }
         return list;
     }
-    
+
     public List<CartItem> getItemsByCartId(int cartId) {
-    List<CartItem> list = new ArrayList<>();
-    String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, cartId);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            CartItem item = new CartItem();
-            item.setId(rs.getInt("id"));
+        List<CartItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cartId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CartItem item = new CartItem();
+                item.setId(rs.getInt("id"));
 
-            Cart cart = new Cart();
-            cart.setId(cartId);
-            item.setCart(cart);
+                Cart cart = new Cart();
+                cart.setId(cartId);
+                item.setCart(cart);
 
-            item.setItemType(rs.getString("item_type"));
-            item.setItemId(rs.getInt("item_id"));
-            item.setQuantity(rs.getInt("quantity"));
-            item.setUnitPrice(rs.getInt("unit_price"));
-            item.setAddedAt(rs.getDate("added_at"));
+                item.setItemType(rs.getString("item_type"));
+                item.setItemId(rs.getInt("item_id"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setUnitPrice(rs.getInt("unit_price"));
+                item.setAddedAt(rs.getDate("added_at"));
 
-            list.add(item);
+                list.add(item);
+            }
+        } catch (Exception e) {
+            System.out.println("getItemsByCartId: " + e.getMessage());
         }
-    } catch (Exception e) {
-        System.out.println("getItemsByCartId: " + e.getMessage());
+        return list;
     }
-    return list;
-}
-
 
     public void create(CartItem item) {
-        String sql = "INSERT INTO cart_items (cart_id, item_type, item_id, quantity, unit_price, added_at) " +
-                     "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        String sql = "INSERT INTO cart_items (cart_id, item_type, item_id, quantity, unit_price, added_at) "
+                + "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, item.getCart().getId());
@@ -149,7 +147,6 @@ public class CartItemDAO extends DBContext {
             System.out.println("delete: " + e.getMessage());
         }
     }
-
 
 //    public static void main(String[] args) {
 //        CartItemDAO dao = new CartItemDAO();
