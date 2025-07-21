@@ -7,6 +7,7 @@ package controller;
 import dao.CartDAO;
 import dao.CartItemDAO;
 import dao.OrderDAO;
+import dao.TicketsDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,10 +17,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
 import model.CartItem;
 import model.Order;
+import model.Ticket;
 import model.User;
 
 /**
@@ -67,34 +70,33 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("cart.jsp").forward(request, response);
-        
-        
-//        HttpSession session = request.getSession(false);
-//        if (session == null || session.getAttribute("user") == null) {
-//            response.sendRedirect("login");
-//            return;
-//        }
-//        User user = (User) session.getAttribute("user");
-//        int userId = user.getId();
-//
-//        UserDAO userDAO = new UserDAO();
-//        Cart cart = userDAO.loadCartByUserId(userId);
-//
-//        if (cart == null) {
-//            response.getWriter().println("Không có giỏ hàng cho user ID: " + userId);
-//            return;
-//        }
-//
-//        List<CartItem> items = userDAO.getItemsByCartId(cart.getId());
-//
-//        // BankTransferNote = cartId_username
-//        String bankTransferNote = "Cart" + cart.getId() + "_" + user.getName();
-//
-//        request.setAttribute("cart", cart);
-//        request.setAttribute("items", items);
-//        request.setAttribute("bankTransferNote", bankTransferNote); // Truyền sang JSP
-//        request.getRequestDispatcher("cart.jsp").forward(request, response);
+
+        HttpSession session = request.getSession();
+        User u = (User) session.getAttribute("user");
+
+        // Nếu chưa login → redirect
+        if (u == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
+        switch (action.toLowerCase()) {
+            case "add":
+                handleAddToCart(request, response, u);
+                break;
+            case "list":
+                handleListCart(request, response, u);
+                break;
+            case "delete":
+                handleDeleteCartItem(request, response, u);
+                break;
+            default:
+                response.sendRedirect("shop");
+        }
 
     }
 
@@ -142,4 +144,69 @@ public class CartServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private void handleAddToCart(HttpServletRequest request, HttpServletResponse response, User u)
+            throws ServletException, IOException {
+        try {
+            int ticketId = Integer.parseInt(request.getParameter("tid"));
+
+            CartDAO cartDAO = new CartDAO();
+            CartItemDAO cartItemDAO = new CartItemDAO();
+            TicketsDAO ticketDAO = new TicketsDAO();
+
+            // Lấy hoặc tạo cart nếu chưa có
+            Cart cart = u.getCart();
+            if (cart == null) {
+                cartDAO.create(u.getId()); // tạo mới cart
+                cart = cartDAO.getCartByUserId(u.getId()); // lấy lại cart từ DB
+                u.setCart(cart); // cập nhật lại user
+            }
+
+            // Kiểm tra item đã tồn tại chưa
+            CartItem existingItem = cartItemDAO.findByCartIdAndTicketId(cart.getId(), ticketId);
+
+            if (existingItem != null) {
+                // Nếu có → tăng quantity
+                cartItemDAO.updateQuantity(existingItem.getId(), existingItem.getQuantity() + 1);
+            } else {
+                // Nếu chưa → thêm mới
+                Ticket ticket = ticketDAO.getTicketById(ticketId);
+                cartItemDAO.create(ticketId, cart.getId(), 1, ticket.getPrice());
+            }
+
+            response.sendRedirect("shop");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi thêm vào giỏ hàng");
+        }
+    }
+
+    private void handleListCart(HttpServletRequest request, HttpServletResponse response, User u)
+            throws ServletException, IOException {
+        try {
+            CartDAO cDao = new CartDAO();
+            List<CartItem> cItemList = cDao.getCartByUserId(u.getId()).getItems(); // nếu em có DAO riêng thì nên load từ đó
+            request.setAttribute("cartItems", cItemList);
+            request.getRequestDispatcher("cart.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi tải giỏ hàng");
+        }
+    }
+    private void handleDeleteCartItem(HttpServletRequest request, HttpServletResponse response, User u)
+            throws ServletException, IOException {
+        try {
+            int itemId = Integer.parseInt(request.getParameter("itemId")); // ID của cart_item
+
+            CartItemDAO cartItemDAO = new CartItemDAO();
+            cartItemDAO.delete(itemId);
+
+            // Redirect lại trang giỏ hàng
+            response.sendRedirect("cart?action=list");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Lỗi khi xoá sản phẩm khỏi giỏ hàng");
+        }
+    }
 }

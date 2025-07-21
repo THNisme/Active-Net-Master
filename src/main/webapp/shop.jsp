@@ -199,7 +199,7 @@
                                     </a>
                                     <p class="ticket-time"></p>
                                     <p class="price"><%= String.format("%,d", p.getPrice())%> VND</p>
-                                    <a href="" class="btn primary-btn buy">
+                                    <a href="cart?action=add&tid=<%=p.getId()%>" class="btn primary-btn buy">
                                         <i class="bi bi-bag"></i>
                                     </a>
                                 </div>

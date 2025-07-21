@@ -1,3 +1,5 @@
+<%@page import="model.Ticket"%>
+<%@page import="dao.TicketsDAO"%>
 <%@page import="model.User"%>
 <%@page import="model.IO"%>
 <%@ page import="java.util.List" %>
@@ -90,21 +92,24 @@
                         </div>
 
                         <%
-                            List<CartItem> cartItems = (List<CartItem>) request.getAttribute("items");
+                            List<CartItem> cartItems = (List<CartItem>) request.getAttribute("cartItems");
                             int totalAmount = 0;
-
+                            TicketsDAO ticketDao = new TicketsDAO();
+                            
                             if (cartItems != null && !cartItems.isEmpty()) {
                                 for (CartItem item : cartItems) {
                                     int itemTotal = item.getUnitPrice() * item.getQuantity();
                                     totalAmount += itemTotal;
+                                    Ticket t = ticketDao.getTicketById(item.getItemId());
+
                         %>
                         <div class="row py-3">
                             <div class="col-6 d-flex">
-                                <button type="button" class="paying-order-table-btn-remove me-2">&times;</button>
-                                <span><%= item.getProductName()%></span>
+                                <a href="cart?action=delete&itemId=<%=item.getId()%>" class="paying-order-table-btn-remove me-2">&times;</a>
+                                <span><%=t.getName()%></span>
                             </div>
                             <div class="col-2">
-                                <input type="number" class="paying-order-table-quantity-input w-100" value="<%= item.getQuantity()%>" min="1">
+                                <input type="text" readonly class="paying-order-table-quantity-input w-100" value="<%= item.getQuantity()%>" min="1">
                             </div>
                             <div class="col-2"><%= IO.formatCurrency(item.getUnitPrice() + "")%></div>
                             <div class="col-2"><%= IO.formatCurrency(itemTotal + "")%></div>

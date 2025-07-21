@@ -141,7 +141,7 @@ public class SingleProductServlet extends HttpServlet {
         cartItem.setUnitPrice(ticket.getPrice());
 
         // Lưu CartItem vào cơ sở dữ liệu
-        cartItemDAO.create(cartItem);
+//        cartItemDAO.create(cartItem);
 
         // Chuyển hướng người dùng đến trang giỏ hàng sau khi thêm sản phẩm
         response.sendRedirect("single");

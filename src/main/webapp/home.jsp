@@ -48,13 +48,13 @@
                     </div>
                     <div class="col-md-6">
                         <ul class="nav-list">
-                            <a href="home" class="nav-item-link">
+                            <a href="home" class="nav-item-link active">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
                             <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="product" class="nav-item-link active">
+                            <a href="product" class="nav-item-link">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
                             <a href="contact" class="nav-item-link">

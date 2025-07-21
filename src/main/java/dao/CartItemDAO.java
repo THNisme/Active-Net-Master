@@ -80,16 +80,17 @@ public class CartItemDAO extends DBContext {
         return list;
     }
 
-    public void create(CartItem item) {
+    public void create(int itemID, int cartID, int quantity, int price) {
         String sql = "INSERT INTO cart_items (cart_id, item_type, item_id, quantity, unit_price, added_at) "
                 + "VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, item.getCart().getId());
-            ps.setString(2, item.getItemType());
-            ps.setInt(3, item.getItemId());
-            ps.setInt(4, item.getQuantity());
-            ps.setInt(5, item.getUnitPrice());
+            ps.setInt(1, cartID);
+            ps.setString(2, "ticket");
+            ps.setInt(3, itemID);
+            ps.setInt(4, quantity);
+            ps.setInt(5, price);
+
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println("create: " + e.getMessage());
@@ -148,41 +149,53 @@ public class CartItemDAO extends DBContext {
         }
     }
 
-//    public static void main(String[] args) {
-//        CartItemDAO dao = new CartItemDAO();
-//        dao.delete(8);
-//        List<CartItem> list = dao.getAll();
-//        for (CartItem item : list) {
-//            System.out.println("ID: " + item.getId());
-//            System.out.println("Cart ID: " + item.getCart().getId());
-//            System.out.println("Type: " + item.getItemType());
-//            System.out.println("ItemID: " + item.getItemId());
-//            System.out.println("Quantity: " + item.getQuantity());
-//            System.out.println("Unit Price: " + item.getUnitPrice());
-//            System.out.println("Added At: " + item.getAddedAt());
-//            System.out.println("-----");
-//        }
-//
-//        Cart cart = new Cart();
-//        cart.setId(1); 
-//        CartItem newItem = new CartItem();
-//        newItem.setCart(cart);
-//        newItem.setItemType("product");
-//        newItem.setItemId(999);
-//        newItem.setQuantity(1);
-//        newItem.setUnitPrice(123456);
-//        dao.create(newItem);
-//        System.out.println("Thêm mới thành công");
-//
-//        CartItem testItem = dao.getById(1);
-//        if (testItem != null) {
-//            System.out.println("Lấy item ID = 1, Qty = " + testItem.getQuantity());
-//        }
-//
-//        if (testItem != null) {
-//            testItem.setQuantity(testItem.getQuantity() + 10);
-//            dao.update(testItem);
-//            System.out.println("Đã cập nhật quantity");
-//        }
-//    }
+    public CartItem findByCartIdAndTicketId(int cartId, int ticketId) {
+        String sql = "SELECT * FROM cart_items "
+                + "JOIN tickets ON cart_items.item_id = tickets.id "
+                + "WHERE cart_items.cart_id = ? "
+                + "AND cart_items.item_type = 'ticket' "
+                + "AND cart_items.item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, cartId);
+            ps.setInt(2, ticketId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                CartItem item = new CartItem();
+                item.setId(rs.getInt("id"));
+                Cart cartTempt = new Cart();
+                cartTempt.setId(rs.getInt("cart_id"));
+
+                item.setCart(cartTempt);
+                item.setItemType("ticket");
+                item.setItemId(ticketId);
+                item.setQuantity(rs.getInt("quantity"));
+                item.setUnitPrice(rs.getInt("unit_price"));
+                // Nếu cần, có thể set thêm info từ bảng tickets
+                return item;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updateQuantity(int cartItemId, int newQuantity) {
+        String sql = "UPDATE cart_items SET quantity = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, newQuantity);
+            ps.setInt(2, cartItemId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        CartItemDAO dao = new CartItemDAO();
+
+        dao.create(7, 1, 1, 10000);
+
+    }
 }

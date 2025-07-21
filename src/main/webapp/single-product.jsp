@@ -103,8 +103,8 @@
                             <p><strong>Số lượng còn:</strong> <%= ticket.getQuantity()%> vé</p>
                             <p><strong>Giá:</strong> <span class="ct-price"><%= ticket.getPrice()%> VND/vé</span></p>
                         </div>
-                        <a href="" class="btn primary-btn ct-sell">
-                            <i class="bi bi-bag"></i> Thêm
+                        <a href="cart?action=add&tid=<%=ticket.getId()%>" class="btn primary-btn ct-sell">
+                            <i class="bi bi-bag"></i>
                         </a>
                         
                         
