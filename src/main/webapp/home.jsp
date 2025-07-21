@@ -70,8 +70,8 @@
                         <a href="login.jsp" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
                         <%                        } else {
                         %>
+                        <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                         <a href="user.jsp" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
-                        <a href="?logout=true" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                             <%                        }
                             %>
                     </div>

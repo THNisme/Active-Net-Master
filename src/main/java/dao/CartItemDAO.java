@@ -51,6 +51,7 @@ public class CartItemDAO extends DBContext {
         }
         return list;
     }
+    
     public List<CartItem> getItemsByCartId(int cartId) {
     List<CartItem> list = new ArrayList<>();
     String sql = "SELECT * FROM cart_items WHERE cart_id = ?";

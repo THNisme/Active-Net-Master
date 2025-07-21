@@ -154,10 +154,22 @@ public class CartDAO extends DBContext {
         }
         return null;
     }
-    
+
     public static void main(String[] args) {
         CartDAO dao = new CartDAO();
-        System.out.println(dao.getCartById(1).getUser().getName());
+        Cart c = dao.getCartByUserId(1);
+
+        List<CartItem> list = c.getItems();
+
+        for (CartItem cItem : list) {
+            System.out.println(cItem.getItemId());
+            System.out.println(cItem.getItemType());
+            System.out.println(cItem.getQuantity());
+            System.out.println(cItem.getUnitPrice());
+            System.out.println("");
+
+        }
+
     }
 
 }

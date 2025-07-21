@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Cart;
+import model.CartItem;
 import model.IO;
 import model.ManualPayment;
 import model.Message;
@@ -56,7 +57,9 @@ public class UserDAO extends DBContext {
                 u.setPasswordHash(pass_db);
                 u.setRole(role);
                 u.setCreatedAt(createdAt);
-//                User u = new User(id, name, email_db, phone, pass_db, role, createdAt);
+
+//              LOAD RELEVENT DATA OF USER 
+                u.setCart(loadCartByUserId(id));
                 u.setMessages(loadMessageByUserId(id));
                 u.setOrders(loadOrderByUserId(id));
             }
@@ -264,6 +267,43 @@ public class UserDAO extends DBContext {
         return list;
     }
 
+    public Cart loadCartByUserId(int userId) {
+        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
+                + "FROM         carts INNER JOIN\n"
+                + "                      users ON carts.user_id = users.id\n"
+                + "					  where users.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                Date createdAt = rs.getDate("created_at");
+                Date updatedAt = rs.getDate("updated_at");
+
+                int uid = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String email_db = rs.getString("email");
+                String phone = rs.getString("phone");
+                String pass_db = rs.getString("password_hash");
+                int role = rs.getInt("role");
+                Date userCreatedAt = rs.getDate("user_created_at");
+
+                User u = new User(uid, name, email_db, phone, pass_db, role, userCreatedAt);
+
+                Cart cart = new Cart(id, u, createdAt, updatedAt);
+              
+                List<CartItem> items = getItemsByCartId(id);
+                cart.setItems(items);
+                
+                return cart;
+            }
+        } catch (Exception e) {
+            System.out.println("getCartByUserId: " + e.getMessage());
+        }
+        return null;
+    }
+
 //    RELATION FUNCTION
     public List<OrderItem> loadOrderItemsByOrderId(int orderId) {
         String sql = "SELECT * FROM order_items \n"
@@ -328,54 +368,69 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    public Cart getCartById(int cartId) {
-        String sql = "SELECT    carts.*, users.name, users.email, users.phone, users.password_hash, users.role, users.created_at AS user_created_at\n"
-                + "FROM         carts INNER JOIN\n"
-                + "                      users ON carts.user_id = users.id\n"
-                + "					  where carts.id = ?";
+    public List<CartItem> getItemsByCartId(int cartId) {
+        List<CartItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, cartId);
-
             ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CartItem item = new CartItem();
+                item.setId(rs.getInt("id"));
 
-            if (rs.next()) {
-                Date createdAt = rs.getDate("created_at");
-                Date updatedAt = rs.getDate("updated_at");
+                Cart cart = new Cart();
+                cart.setId(cartId);
+                item.setCart(cart);
 
-                int userId = rs.getInt("user_id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                String pass = rs.getString("password_hash");
-                int role = rs.getInt("role");
-                Date userCreatedAt = rs.getDate("user_created_at");
+                item.setItemType(rs.getString("item_type"));
+                item.setItemId(rs.getInt("item_id"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setUnitPrice(rs.getInt("unit_price"));
+                item.setAddedAt(rs.getDate("added_at"));
 
-                User u = new User(userId, name, email, phone, pass, role, userCreatedAt);
-
-                Cart c = new Cart(role, u, createdAt, updatedAt);
-                return c;
+                list.add(item);
             }
-
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("getItemsByCartId: " + e.getMessage());
         }
-        return null;
+        return list;
     }
 
     public static void main(String[] args) {
         UserDAO dao = new UserDAO();
 
-        User u = dao.login("admin@gmail.com", "123456");
+//        User u = dao.login("admin@gmail.com", "123456");
+        User u = dao.login("a@example.com", "123456");
 
+        System.out.println("------ U INFOR ------");
         System.out.println(u.getId());
         System.out.println(u.getName());
         System.out.println(u.getEmail());
-        System.out.println(u.getPhone());
-        System.out.println(u.getPasswordHash());
-        System.out.println(u.getRole());
-        System.out.println(u.getCreatedAt());
+        
+        
+        
+//       System.out.println(u.getPhone());
+//        System.out.println(u.getPasswordHash());
+//        System.out.println(u.getRole());
+//        System.out.println(u.getCreatedAt());
 
+        System.out.println("------ U CART ------");
+        Cart uCart = u.getCart();
+
+//        Cart testCart = dao.loadCartByUserId(1);
+        List<CartItem> uCartList = uCart.getItems();
+
+        for (CartItem i : uCartList) {
+            System.out.println(i.getItemId());
+            System.out.println(i.getItemType());
+            System.out.println(i.getQuantity());
+            System.out.println(i.getUnitPrice());
+        }
+
+//        Cart uCart = dao.getCartByUserId(1);
+//        System.out.println(uCart.getId());
+//        System.out.println(uCart.getCreatedAt());
 //        List<Order> orderList = u.getOrders();
 //
 //        for (Order m : orderList) {
