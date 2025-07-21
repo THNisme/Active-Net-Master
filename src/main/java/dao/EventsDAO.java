@@ -6,6 +6,7 @@ package dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,15 +74,28 @@ public class EventsDAO extends DBContext {
         return null;
     }
 
-    public void create(String name, String description, Date date, String location, Date createdAt) {
-        String sql = "INSERT INTO events (name, description, date, location, created_at) VALUES(?, ?, ?, ?, ?)";
+    public void create(String name, String description, Date date, String location) {
+        String sql = "INSERT INTO events (name, description, date, location, created_at) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ps.setString(2, description);
             ps.setDate(3, (java.sql.Date) date);
             ps.setString(4, location);
-            ps.setDate(5, (java.sql.Date) createdAt);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public void createDashboard(String name, String description, String date, String location) {
+        String sql = "INSERT INTO events (name, description, date, location, created_at) VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setString(2, description);
+            ps.setDate(3, java.sql.Date.valueOf(date));
+            ps.setString(4, location);
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -106,6 +120,25 @@ public class EventsDAO extends DBContext {
             System.out.println(e.getMessage());
         }
     }
+    
+    public void updateDashboard(int id, String name, String description, String date, String location, String created_at) {
+        String sql = "UPDATE [dbo].[events] SET [name] = ?, [description] = ?, [date] = ?, [location] = ?, [create_at] = ? WHERE [id] = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, description);
+            ps.setDate(3, java.sql.Date.valueOf(date));
+            ps.setString(4, location);
+            ps.setDate(5, java.sql.Date.valueOf(created_at));
+            ps.setInt(6, id);
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void delete(int id) {
         String sql = "DELETE FROM events WHERE id = ?";
@@ -116,6 +149,47 @@ public class EventsDAO extends DBContext {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+    
+    public void deleteAllData(int eventId) {
+        
+        String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE item_type = 'ticket' and item_id = ?)";
+        String deleteTicket = "DELETE FROM tickets WHERE events_id = ?";
+        String deleteEvent = "DELETE FROM events WHERE id = ?";
+
+        try {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            PreparedStatement ps1 = conn.prepareStatement(deleteCartItems);
+            ps1.setInt(1, eventId);
+            ps1.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement(deleteTicket);
+            ps2.setInt(1, eventId);
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 = conn.prepareStatement(deleteEvent);
+            ps3.setInt(1, eventId);
+            ps3.executeUpdate();
+
+            
+
+            conn.commit(); // Thành công → commit
+
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // Lỗi → rollback
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.setAutoCommit(true); // Trả lại trạng thái mặc định
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

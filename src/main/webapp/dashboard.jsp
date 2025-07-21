@@ -98,11 +98,11 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#">Quản lý vé</a></li>
-                                    <li><a class="dropdown-item" href="#">Danh mục vé</a></li>
+                                    <li><a class="dropdown-item" href="ticketcategory">Danh mục vé</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Thông tin sự kiện</a></li>
+                                    <li><a class="dropdown-item" href="events">Thông tin sự kiện</a></li>
                                 </ul>
                             </li>
 

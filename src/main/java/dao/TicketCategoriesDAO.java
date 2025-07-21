@@ -6,6 +6,7 @@ package dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.TicketCategories;
@@ -103,6 +104,46 @@ public class TicketCategoriesDAO extends DBContext {
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println("delete: " + e.getMessage());
+        }
+    }
+    
+    public void deleteAllData(int id) {
+        String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE item_type = 'ticket' and item_id IN (SELECT id FROM tickets WHERE category_id = ? ))";
+        String deleteTicket = "DELETE FROM tickets WHERE category_id = ?";
+        String deleteTicketCategories = "DELETE FROM ticket_categories WHERE id = ?";
+
+        try {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            PreparedStatement ps1 = conn.prepareStatement(deleteCartItems);
+            ps1.setInt(1, id);
+            ps1.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement(deleteTicket);
+            ps2.setInt(1, id);
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 = conn.prepareStatement(deleteTicketCategories);
+            ps3.setInt(1, id);
+            ps3.executeUpdate();
+
+            
+
+            conn.commit(); // Thành công → commit
+
+        } catch (Exception e) {
+            try {
+                conn.rollback(); // Lỗi → rollback
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.setAutoCommit(true); // Trả lại trạng thái mặc định
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
