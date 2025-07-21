@@ -68,12 +68,12 @@
                                     List<String> errorList = (List<String>) session.getAttribute("errorList");
                                     if (errorList != null && !errorList.isEmpty()) {
                                         for (String err : errorList) {
-                                           %>
-                                           <p><%=err%></p>
-                                           <%
+                                %>
+                                <p><%=err%></p>
+                                <%
                                         }
                                     }
-            session.setAttribute("errorList", null);
+                                    session.setAttribute("errorList", null);
 
                                 %>
 

@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.ProductDAO;
+import dao.TicketsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,21 +14,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Comparator;
 import java.util.List;
-import model.Product;
+import model.Ticket;
 
 /**
  *
- * @author Lê Hữu Tính
+ * @author Admin
  */
-@WebServlet(name = "ProductServlet", urlPatterns = {"/product"})
-public class ProductServlet extends HttpServlet {
-
-    private ProductDAO dao;
+@WebServlet(name = "ShopServlet", urlPatterns = {"/shop"})
+public class ShopServlet extends HttpServlet {
+     private TicketsDAO dao;
 
     @Override
     public void init() throws ServletException {
-        dao = new ProductDAO();
+       dao = new TicketsDAO();
     }
+     
+     
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,10 +48,10 @@ public class ProductServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ProductServlet</title>");
+            out.println("<title>Servlet ShopServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ProductServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShopServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -68,54 +69,52 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("shop");
-        
-//        ProductDAO dao = new ProductDAO();
-//
-//        String keyword = request.getParameter("keyword");
-//        String category = request.getParameter("category");
-//        String sort = request.getParameter("sort");
-//        List<Product> productList;
-//
-//        //Tìm kiếm theo keyword
-//        if (keyword != null && !keyword.trim().isEmpty()) {
-//            productList = dao.searchByName(keyword.trim());
-//        } else {
-//            if (category != null && !category.equals("all")) {
-//                try {
-//                    int catId = Integer.parseInt(category);
-//                    productList = dao.getByCategory(catId);
-//                } catch (NumberFormatException e) {
-//                    productList = dao.getAll();
-//                }
-//            } else {
-//                productList = dao.getAll();
-//            }
-//        }
-//
-//        // Sắp xếp
-//        if (sort != null) {
-//            switch (sort) {
-//                case "az":
-//                    productList.sort(Comparator.comparing(Product::getName));
-//                    break;
-//                case "za":
-//                    productList.sort(Comparator.comparing(Product::getName).reversed());
-//                    break;
-//                case "lowtohigh":
-//                    productList.sort(Comparator.comparingLong(Product::getPrice));
-//                    break;
-//                case "hightolow":
-//                    productList.sort(Comparator.comparingLong(Product::getPrice).reversed());
-//                    break;
-//            }
-//        }
-//
-//        request.setAttribute("productList", productList);
-//        request.setAttribute("keyword", keyword != null ? keyword : "");
-//        request.setAttribute("currentCategory", category != null ? category : "all");
-//        request.setAttribute("currentSort", sort != null ? sort : "");
-//        request.getRequestDispatcher("shop.jsp").forward(request, response);
+        TicketsDAO dao = new TicketsDAO();
+
+        String keyword = request.getParameter("keyword");
+        String category = request.getParameter("category");
+        String sort = request.getParameter("sort");
+        List<Ticket> ticketList;
+
+        //Tìm kiếm theo keyword
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ticketList = dao.searchTicketsByName(keyword.trim());
+        } else {
+            if (category != null && !category.equals("all")) {
+                try {
+                    int catId = Integer.parseInt(category);
+                    ticketList = dao.getTicketsByCateID(catId);
+                } catch (NumberFormatException e) {
+                    ticketList = dao.getAll();
+                }
+            } else {
+                ticketList = dao.getAll();
+            }
+        }
+
+        // Sắp xếp
+        if (sort != null) {
+            switch (sort) {
+                case "az":
+                    ticketList.sort(Comparator.comparing(Ticket::getName));
+                    break;
+                case "za":
+                    ticketList.sort(Comparator.comparing(Ticket::getName).reversed());
+                    break;
+                case "lowtohigh":
+                    ticketList.sort(Comparator.comparingLong(Ticket::getPrice));
+                    break;
+                case "hightolow":
+                    ticketList.sort(Comparator.comparingLong(Ticket::getPrice).reversed());
+                    break;
+            }
+        }
+
+        request.setAttribute("productList", ticketList);
+        request.setAttribute("keyword", keyword != null ? keyword : "");
+        request.setAttribute("currentCategory", category != null ? category : "all");
+        request.setAttribute("currentSort", sort != null ? sort : "");
+        request.getRequestDispatcher("shop.jsp").forward(request, response);
     }
 
     /**
@@ -129,7 +128,7 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response); // Gọi lại doGet cho xử lý chung
+        doGet(request, response);
     }
 
     /**

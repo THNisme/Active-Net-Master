@@ -2,7 +2,7 @@
 <!doctype html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Product" %>
+<%@ page import="model.Ticket" %>
 
 <%
     String currentCategory = request.getParameter("category") != null ? request.getParameter("category") : "all";
@@ -155,7 +155,7 @@
                         <div class="filter-box">
                             <!-- Tìm kiếm -->
                             <div class="mb-4">
-                                <form action="product" method="get" class="custom-search-bar">
+                                <form action="shop" method="get" class="custom-search-bar">
                                     <input type="text" name="keyword" placeholder="Tìm sản phẩm..." class="form-control"
                                            value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : ""%>"/>
                                 </form>
@@ -164,18 +164,18 @@
                             <!-- Bộ lọc danh mục -->
                             <p class="filter-heading"><strong>Danh mục</strong></p>
                             <ul class="list-unstyled">
-                                <li><a href="product?category=all<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Tất cả</a></li>
-                                <li><a href="product?category=1<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vé sự kiện</a></li>
-                                <li><a href="product?category=2<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vật phẩm sự kiện</a></li>
+                                <li><a href="shop?category=all<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Tất cả</a></li>
+                                <li><a href="shop?category=1<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vé sự kiện</a></li>
+                                <li><a href="shop?category=2<%= !currentSort.isEmpty() ? "&sort=" + currentSort : ""%>">Vật phẩm sự kiện</a></li>
                             </ul>
 
                             <!-- Sắp xếp -->
                             <p class="filter-heading mt-4"><strong>Sắp xếp:</strong></p>
                             <ul class="list-unstyled">
-                                <li><a href="product?category=<%= currentCategory%>&sort=az">A-Z</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=za">Z-A</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=lowtohigh">Giá thấp đến cao</a></li>
-                                <li><a href="product?category=<%= currentCategory%>&sort=hightolow">Giá cao đến thấp</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=az">A-Z</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=za">Z-A</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=lowtohigh">Giá thấp đến cao</a></li>
+                                <li><a href="shop?category=<%= currentCategory%>&sort=hightolow">Giá cao đến thấp</a></li>
                             </ul>
                         </div>
                     </aside>
@@ -183,9 +183,9 @@
                     <div class="col-md-9">
                         <div class="product-container row">
                             <%
-                                List<Product> productList = (List<Product>) request.getAttribute("productList");
+                                List<Ticket> productList = (List<Ticket>) request.getAttribute("productList");
                                 if (productList != null && !productList.isEmpty()) {
-                                    for (Product p : productList) {
+                                    for (Ticket p : productList) {
                             %>
                             <div class="col-md-4 mb-4 d-flex">
                                 <div class="ticket-wrapper">
