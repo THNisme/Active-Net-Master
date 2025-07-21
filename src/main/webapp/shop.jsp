@@ -38,7 +38,7 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-3">
-                        <a class="nav-logo-link" href="#">
+                        <a class="nav-logo-link" href="">
                             <img src="./assets/img/logo/fac/Logo-Nav.png" alt="F-Active Logo" class="nav-brand-img">
                         </a>
                     </div>
@@ -47,13 +47,13 @@
                             <a href="home" class="nav-item-link">
                                 <li class="nav-list-item">Trang chủ</li>
                             </a>
-                            <a href="about.jsp" class="nav-item-link">
+                            <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="product" class="nav-item-link">
+                            <a href="product" class="nav-item-link active">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
-                            <a href="contact.jsp" class="nav-item-link">
+                            <a href="contact" class="nav-item-link">
                                 <li class="nav-list-item">Liên hệ</li>
                             </a>
                         </ul>
@@ -269,19 +269,19 @@
                                 Active Net
                             </h4>
                             <ul class="footer-link-list">
-                                <a href="" class="footer-item-link">
+                                <a href="home" class="footer-item-link">
                                     <li class="footer-link-list-item">Trang chủ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="about" class="footer-item-link">
                                     <li class="footer-link-list-item">Giới thiệu</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="product" class="footer-item-link">
                                     <li class="footer-link-list-item">Cửa hàng</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="contact" class="footer-item-link">
                                     <li class="footer-link-list-item">Liên hệ</li>
                                 </a>
-                                <a href="" class="footer-item-link">
+                                <a href="login" class="footer-item-link">
                                     <li class="footer-link-list-item">Đăng nhập</li>
                                 </a>
                             </ul>

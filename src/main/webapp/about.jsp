@@ -57,8 +57,8 @@
                     </ul>
                 </div>
                 <div class="col-md-3">
-                    <a href="#" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
-                    <a href="#" class="btn primary-btn btn-nav-login"><i class="bi bi-person-circle"></i></a>
+                    <a href="login" class="btn primary-btn btn-nav-login active">Đăng nhập</a>
+                    <a href="profile" class="btn primary-btn btn-nav-login"><i class="bi bi-person-circle"></i></a>
                 </div>
             </div>
     </nav>
@@ -244,7 +244,7 @@
                 <h2 class="cta-heading">
                     <span class="highlight">Mua vé</span> tham gia sự kiện ngay !
                 </h2>
-                <a href="shop.html" class="btn primary-btn mt-3">Xem vé</a>
+                <a href="product" class="btn primary-btn mt-3">Xem vé</a>
             </div>
         </section>
 
@@ -281,77 +281,77 @@
 
 
     <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <img src="./assets/img/logo/fac/LogoA-trans.png" alt="F-Active Logo" class="footer-logo-img">
-                    <p class="footer-text">
-                        Active Net một dự án cộng tác từ Câu lạc bộ sự kiện F-Active cùng HiFive Team
-                    </p>
-                    <ul class="footer-social-link-list">
-                        <a href="" class="footer-social-link-item">
-                            <li class="footer-social-list-item">
-                                <i class="bi bi-facebook"></i>
-                            </li>
-                        </a>
-                        <a href="" class="footer-social-link-item">
-                            <li class="footer-social-list-item">
-                                <i class="bi bi-youtube"></i>
-                            </li>
-                        </a>
-                        <a href="" class="footer-social-link-item">
-                            <li class="footer-social-list-item">
-                                <i class="bi bi-tiktok"></i>
-                            </li>
-                        </a>
-                    </ul>
-                </div>
-                <div class="col-md-4 footer-col">
-                    <div class="footer-content">
-                        <h4 class="footer-heading">
-                            Active Net
-                        </h4>
-                        <ul class="footer-link-list">
-                            <a href="" class="footer-item-link">
-                                <li class="footer-link-list-item">Trang chủ</li>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="./assets/img/logo/fac/LogoA-trans.png" alt="F-Active Logo" class="footer-logo-img">
+                        <p class="footer-text">
+                            Active Net một dự án cộng tác từ Câu lạc bộ sự kiện F-Active cùng HiFive Team
+                        </p>
+                        <ul class="footer-social-link-list">
+                            <a href="" class="footer-social-link-item">
+                                <li class="footer-social-list-item">
+                                    <i class="bi bi-facebook"></i>
+                                </li>
                             </a>
-                            <a href="" class="footer-item-link">
-                                <li class="footer-link-list-item">Giới thiệu</li>
+                            <a href="" class="footer-social-link-item">
+                                <li class="footer-social-list-item">
+                                    <i class="bi bi-youtube"></i>
+                                </li>
                             </a>
-                            <a href="" class="footer-item-link">
-                                <li class="footer-link-list-item">Cửa hàng</li>
-                            </a>
-                            <a href="" class="footer-item-link">
-                                <li class="footer-link-list-item">Liên hệ</li>
-                            </a>
-                            <a href="" class="footer-item-link">
-                                <li class="footer-link-list-item">Đăng nhập</li>
+                            <a href="" class="footer-social-link-item">
+                                <li class="footer-social-list-item">
+                                    <i class="bi bi-tiktok"></i>
+                                </li>
                             </a>
                         </ul>
                     </div>
+                    <div class="col-md-4 footer-col">
+                        <div class="footer-content">
+                            <h4 class="footer-heading">
+                                Active Net
+                            </h4>
+                            <ul class="footer-link-list">
+                                <a href="home" class="footer-item-link">
+                                    <li class="footer-link-list-item">Trang chủ</li>
+                                </a>
+                                <a href="about" class="footer-item-link">
+                                    <li class="footer-link-list-item">Giới thiệu</li>
+                                </a>
+                                <a href="product" class="footer-item-link">
+                                    <li class="footer-link-list-item">Cửa hàng</li>
+                                </a>
+                                <a href="contact" class="footer-item-link">
+                                    <li class="footer-link-list-item">Liên hệ</li>
+                                </a>
+                                <a href="login" class="footer-item-link">
+                                    <li class="footer-link-list-item">Đăng nhập</li>
+                                </a>
+                            </ul>
+                        </div>
 
-                </div>
-                <div class="col-md-4 footer-col">
-                    <div class="footer-content">
-                        <h4 class="footer-heading">
-                            Get In Touch
-                        </h4>
-                        <ul class="footer-link-list">
-                            <a href="mailto: clbfactive1420@gmail.com" class="footer-item-link">
-                                <li class="footer-link-list-item">clbfactive1420@gmail.com</li>
-                            </a>
-                            <a href="tel:0704906670" class="footer-item-link">
-                                <li class="footer-link-list-item">070 490 6670</li>
-                            </a>
-                        </ul>
+                    </div>
+                    <div class="col-md-4 footer-col">
+                        <div class="footer-content">
+                            <h4 class="footer-heading">
+                                Get In Touch
+                            </h4>
+                            <ul class="footer-link-list">
+                                <a href="mailto: clbfactive1420@gmail.com" class="footer-item-link">
+                                    <li class="footer-link-list-item">clbfactive1420@gmail.com</li>
+                                </a>
+                                <a href="tel:0704906670" class="footer-item-link">
+                                    <li class="footer-link-list-item">070 490 6670</li>
+                                </a>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+                <div class="row">
+                    <p class="footer-copyright">Copyright © 2025 Hifive Team | All Rights Deserved @hifiveteam</p>
+                </div>
             </div>
-            <div class="row">
-                <p class="footer-copyright">Copyright © 2025 Hifive Team | All Rights Deserved @hifiveteam</p>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
 
     <!-- MASONRY INIT -->
