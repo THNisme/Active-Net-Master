@@ -69,9 +69,9 @@
                         <a href="logout" class="btn primary-btn btn-nav-login active"><i class="bi bi-box-arrow-right"></i></a>
                         <a href="profile" class="btn primary-btn btn-nav-login active"><i class="bi bi-person-circle"></i></a>
                         <a href="cart" class="btn primary-btn btn-nav-login active"><i class="bi bi-bag"></i></a>
-                        
-                            <%                        }
-                            %>
+
+                        <%                        }
+                        %>
                     </div>
                 </div>
         </nav>
@@ -95,7 +95,7 @@
                             List<CartItem> cartItems = (List<CartItem>) request.getAttribute("cartItems");
                             int totalAmount = 0;
                             TicketsDAO ticketDao = new TicketsDAO();
-                            
+
                             if (cartItems != null && !cartItems.isEmpty()) {
                                 for (CartItem item : cartItems) {
                                     int itemTotal = item.getUnitPrice() * item.getQuantity();
@@ -149,37 +149,48 @@
                 </div>
             </section>
 
+            <%
+                User u = (User) session.getAttribute("user");
+            %>
+
             <div class="modal fade" id="modalChuyenKhoan" tabindex="-1">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header flex-column">
-                            <img src="./assets/img/logo/fac/Logo-back-text.png" alt="Logo-FAC" class="logo-fac" />
+                        <div class="modal-content">
+                            <div class="modal-header flex-column">
+                                <img src="./assets/img/logo/fac/Logo-back-text.png" alt="Logo-FAC" class="logo-fac" />
+                            </div>
+                            <section class="modal-body">
+                                <h4 class="modal-body-head" id="modalChuyenKhoanmodal-body-label">
+                                    <span>Nội dung chuyển khoản</span>
+                                </h4>
+                                <%
+                                    String noteBank = "Giỏ hàng trống !";
+                                    if (u.getCart() != null && !u.getCart().getItems().isEmpty()) {
+                                        String uid = u.getId() + "";
+                                        String cid = (u.getCart().getId() + 1) + "";
+                                        noteBank = uid + cid;
+                                    }
+                                %>
+                                <p><strong><%=noteBank%></strong></p> 
+                                <p>
+                                    <span class="modal-body-label">Lưu ý:</span>
+                                    <span class="modal-body-content">Điền chính xác nội dung chuyển khoản</span>
+                                </p>
+                                <img src="./assets/img/QR.jpg" alt="QR" class="QR" />
+                            </section>
+                            <div class="modal-footer">
+                                <button type="button" class="btn primary-btn modal-btn-button-cancel" data-bs-dismiss="modal">Hủy</button>
+                                <form action="payment" method="post">
+                                    <input type="hidden" name="action" value="checkout">
+                                    <input type="hidden" name="totalAmount" value="<%= totalAmount%>">
+                                    <input type="hidden" name="bankTransferNote" value="<%=noteBank%>">
+                                    <input type="hidden" name="uid" value="<%=d.getId()%>">
+
+                                    <button type="submit" class="btn primary-btn modal-btn-button-finish">Xong !</button>
+                                </form>
+                            </div>
                         </div>
-                        <section class="modal-body">
-                            <h4 class="modal-body-head" id="modalChuyenKhoanmodal-body-label">
-                                <span>Nội dung chuyển khoản</span>
-                            </h4>
-                            <p><strong>${bankTransferNote}</strong></p> 
-                            <p>
-                                <span class="modal-body-label">Lưu ý:</span>
-                                <span class="modal-body-content">Điền chính xác nội dung chuyển khoản</span>
-                            </p>
-                            <img src="./assets/img/QR.jpg" alt="QR" class="QR" />
-                        </section>
-                        <div class="modal-footer">
-                            <button type="button" class="btn primary-btn modal-btn-button-cancel" data-bs-dismiss="modal">Hủy</button>
-                            <form action="cart" method="post">
-                                <input type="hidden" name="action" value="checkout">
-
-                                <input type="hidden" name="totalAmount" value="<%= totalAmount%>">
-                                <input type="hidden" name="bankTransferNote" value="Giao dịch từ website">
-
-                                <button type="submit" class="btn primary-btn modal-btn-button-finish">Xong !</button>
-                            </form>
-
-
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </main>

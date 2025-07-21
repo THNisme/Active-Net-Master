@@ -94,25 +94,19 @@ public class ManualPaymentDAO extends DBContext {
     }
 
     // Tạo mới thanh toán thủ công
-    public void create(ManualPayment payment) {
-        String sql = "INSERT INTO manual_payments (order_id, transfer_content, confirmed_by_admin, confirmed_at) VALUES (?, ?, ?, ?)";
-        
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, payment.getOrder().getId());
-            ps.setString(2, payment.getTransferContent());
-            ps.setBoolean(3, payment.isConfirmedByAdmin());
-            
-            // Sử dụng setDate thay vì setTimestamp
-            if (payment.getConfirmedAt() != null) {
-                ps.setDate(4, new java.sql.Date(payment.getConfirmedAt().getTime()));
-            } else {
-                ps.setDate(4, null);
-            }
-            
+    public void create(int orderId, String bankNote) {
+        String sql = "INSERT INTO manual_payments (order_id, transfer_content, confirmed_by_admin, confirmed_at) "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ps.setString(2, bankNote);
+            ps.setBoolean(3, false);         // chưa xác nhận
+            ps.setTimestamp(4, null);        // chưa có thời gian xác nhận
+
             ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("create: " + e.getMessage());
+            System.out.println("ManualPaymentDAO.create: " + e.getMessage());
         }
     }
 

@@ -191,6 +191,16 @@ public class CartItemDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    
+    public void deleteByCartId(int cartId) {
+        String sql = "DELETE FROM cart_items WHERE cart_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cartId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("deleteByCartId: " + e.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         CartItemDAO dao = new CartItemDAO();

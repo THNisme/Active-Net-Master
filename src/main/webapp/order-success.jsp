@@ -1,3 +1,4 @@
+<%@page import="model.User"%>
 <!DOCTYPE html>
 <html lang="en">
     <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
@@ -42,7 +43,7 @@
                             <a href="about" class="nav-item-link">
                                 <li class="nav-list-item">Giới thiệu</li>
                             </a>
-                            <a href="product" class="nav-item-link active">
+                            <a href="product" class="nav-item-link">
                                 <li class="nav-list-item">Cửa hàng</li>
                             </a>
                             <a href="contact" class="nav-item-link">

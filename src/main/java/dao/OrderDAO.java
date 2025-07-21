@@ -7,8 +7,10 @@ package dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import model.CartItem;
 import model.ManualPayment;
 import model.Order;
 import model.OrderItem;
@@ -210,6 +212,44 @@ public class OrderDAO extends DBContext {
         }
 
     }
+    
+    public void addItemToOrder(int orderId, CartItem item) {
+        String sql = "INSERT INTO order_items (order_id, item_type, item_id, quantity, unit_price) "
+                + "VALUES (?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ps.setString(2, item.getItemType()); // "ticket" hoặc "product"
+            ps.setInt(3, item.getItemId());
+            ps.setInt(4, item.getQuantity());
+            ps.setInt(5, item.getUnitPrice());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("addItemToOrder: " + e.getMessage());
+        }
+    }
+    
+    
+    public int createTurnInt(int userId, int totalAmount, String bankNote) {
+        String sql = "INSERT INTO orders (user_id, total_amount, status, bank_transfer_note, created_at) "
+                + "VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, totalAmount);
+            ps.setString(3, "pending");
+            ps.setString(4, bankNote);
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // return orderId
+            }
+        } catch (Exception e) {
+            System.out.println("OrderDAO.create: " + e.getMessage());
+        }
+        return -1;
+    }
+    
 
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();

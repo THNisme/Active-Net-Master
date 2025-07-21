@@ -200,7 +200,15 @@ public class CartServlet extends HttpServlet {
 
             CartItemDAO cartItemDAO = new CartItemDAO();
             cartItemDAO.delete(itemId);
+            
+            // Cập nhật lại danh sách cart items từ DB
+            List<CartItem> updatedItems = cartItemDAO.getItemsByCartId(u.getCart().getId());
+            u.getCart().setItems(updatedItems);
 
+            // Cập nhật lại user trong session
+            HttpSession session = request.getSession();
+            session.setAttribute("user", u);
+            
             // Redirect lại trang giỏ hàng
             response.sendRedirect("cart?action=list");
 
