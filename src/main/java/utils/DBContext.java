@@ -24,9 +24,9 @@ public class DBContext {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 //          dbURL mặc định
             String dbURL = "jdbc:sqlserver://localhost:1433;"
-                    + "databaseName=Active_Net_Master;"
+                    + "databaseName=Active_Net_Master2;"
                     + "user=sa;"
-                    + "password=123456;"
+                    + "password=123;"
                     + "encrypt=true;trustServerCertificate=true;";
 
          // dbURL của Tính
