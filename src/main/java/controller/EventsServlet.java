@@ -113,7 +113,7 @@ public class EventsServlet extends HttpServlet {
             String dateCreateAt = request.getParameter("createAtEdit");
 
             EventsDAO eDao = new EventsDAO();
-            eDao.updateDashboard(id, name, desc, date, location, dateCreateAt);
+            eDao.updateDashboard(id, name, desc, date, location);
             response.sendRedirect("events");
         } else if (view.equalsIgnoreCase("delete")) {
             int id = Integer.parseInt(request.getParameter("idDelete"));
@@ -122,10 +122,10 @@ public class EventsServlet extends HttpServlet {
             eDao.deleteAllData(id);
             response.sendRedirect("events");
         } else if (view.equalsIgnoreCase("add")) {
-            String name = request.getParameter("eventNameEdit");
-            String desc = request.getParameter("descEdit");
-            String date = request.getParameter("dateEdit");
-            String location = request.getParameter("locationEdit");
+            String name = request.getParameter("eventNameAdd");
+            String desc = request.getParameter("descAdd");
+            String date = request.getParameter("dateAdd");
+            String location = request.getParameter("locationAdd");
 
             EventsDAO eDao = new EventsDAO();
             eDao.createDashboard(name, desc, date, location);

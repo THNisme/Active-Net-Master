@@ -106,7 +106,7 @@ public class TicketCategoryServlet extends HttpServlet {
 
         if (view.equalsIgnoreCase("edit")) {
             int id = Integer.parseInt(request.getParameter("idEdit"));
-            String name = request.getParameter("eventNameEdit");
+            String name = request.getParameter("nameEdit");
             String desc = request.getParameter("descEdit");
             
             ticketCate.update(id, name, desc);
@@ -117,8 +117,8 @@ public class TicketCategoryServlet extends HttpServlet {
             ticketCate.deleteAllData(id);
             response.sendRedirect("ticketcategory");
         } else if (view.equalsIgnoreCase("add")) {
-            String name = request.getParameter("eventNameEdit");
-            String desc = request.getParameter("descEdit");
+            String name = request.getParameter("nameAdd");
+            String desc = request.getParameter("descAdd");
 
             ticketCate.create(name, desc);
             response.sendRedirect("ticketcategory");

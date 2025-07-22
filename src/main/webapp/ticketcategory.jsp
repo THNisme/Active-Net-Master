@@ -188,7 +188,7 @@
         <div class="modal fade mt-5 " id="addNewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog" style="min-width: 1000px">
-                <form action="users?view=add" method="post">
+                <form action="ticketcategory?view=add" method="post">
                     <div class="modal-content">
 
                         <div class="modal-header">
@@ -213,7 +213,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Tạo</button>
                         </div>
                 </form>
             </div>
@@ -225,7 +226,7 @@
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog" style="min-width: 1200px">
 
-            <form action="events?view=edit" method="post">
+            <form action="ticketcategory?view=edit" method="post">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -242,9 +243,9 @@
                         </div>
 
                         <div class="mb-3 row">
-                            <label for="eventNameEdit" class="col-sm-2 col-form-label fw-medium">Tên:</label>
+                            <label for="nameEdit" class="col-sm-2 col-form-label fw-medium">Tên:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="eventNameEdit" name="eventNameEdit">
+                                <input type="text" class="form-control" id="nameEdit" name="nameEdit">
                             </div>
                         </div>
 
@@ -272,7 +273,7 @@
     <div class="modal fade mt-5 " id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="events?view=delete" method="post">
+            <form action="ticketcategory?view=delete" method="post">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -304,7 +305,7 @@
     <script>
         function fnEdit(id, name, desc) {
             document.getElementById("idEdit").value = id;
-            document.getElementById("eventNameEdit").value = name;
+            document.getElementById("nameEdit").value = name;
             document.getElementById("descEdit").value = desc;
         }
 

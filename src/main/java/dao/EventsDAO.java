@@ -121,8 +121,8 @@ public class EventsDAO extends DBContext {
         }
     }
     
-    public void updateDashboard(int id, String name, String description, String date, String location, String created_at) {
-        String sql = "UPDATE [dbo].[events] SET [name] = ?, [description] = ?, [date] = ?, [location] = ?, [create_at] = ? WHERE [id] = ?";
+    public void updateDashboard(int id, String name, String description, String date, String location) {
+        String sql = "UPDATE [dbo].[events] SET [name] = ?, [description] = ?, [date] = ?, [location] = ? WHERE [id] = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -131,8 +131,7 @@ public class EventsDAO extends DBContext {
             ps.setString(2, description);
             ps.setDate(3, java.sql.Date.valueOf(date));
             ps.setString(4, location);
-            ps.setDate(5, java.sql.Date.valueOf(created_at));
-            ps.setInt(6, id);
+            ps.setInt(5, id);
 
             ps.executeUpdate();
         } catch (Exception e) {
@@ -154,8 +153,8 @@ public class EventsDAO extends DBContext {
     
     public void deleteAllData(int eventId) {
         
-        String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE item_type = 'ticket' and item_id = ?)";
-        String deleteTicket = "DELETE FROM tickets WHERE events_id = ?";
+        String deleteCartItems = "DELETE FROM cart_items WHERE  item_type = 'ticket' and item_id = ?";
+        String deleteTicket = "DELETE FROM tickets WHERE event_id = ?";
         String deleteEvent = "DELETE FROM events WHERE id = ?";
 
         try {

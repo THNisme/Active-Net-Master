@@ -81,7 +81,7 @@ public class TicketCategoriesDAO extends DBContext {
 
     // Cập nhật
     public void update(int id, String name, String description) {
-        String sql = "UPDATE ticket_categories SET name = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE ticket_categories SET [name] = ?, [description] = ? WHERE id = ?;";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -106,9 +106,9 @@ public class TicketCategoriesDAO extends DBContext {
             System.out.println("delete: " + e.getMessage());
         }
     }
-    
+
     public void deleteAllData(int id) {
-        String deleteCartItems = "DELETE FROM cart_items WHERE cart_id IN (SELECT id FROM carts WHERE item_type = 'ticket' and item_id IN (SELECT id FROM tickets WHERE category_id = ? ))";
+        String deleteCartItems = "DELETE FROM cart_items WHERE item_type = 'ticket' and item_id IN (SELECT id FROM tickets WHERE category_id = ? )";
         String deleteTicket = "DELETE FROM tickets WHERE category_id = ?";
         String deleteTicketCategories = "DELETE FROM ticket_categories WHERE id = ?";
 
@@ -126,8 +126,6 @@ public class TicketCategoriesDAO extends DBContext {
             PreparedStatement ps3 = conn.prepareStatement(deleteTicketCategories);
             ps3.setInt(1, id);
             ps3.executeUpdate();
-
-            
 
             conn.commit(); // Thành công → commit
 
