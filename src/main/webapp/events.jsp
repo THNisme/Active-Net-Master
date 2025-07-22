@@ -87,7 +87,7 @@
                                 </ul>
                             </li>
                             <!-- Sản phẩm -->
-                            <li class="nav-item dropdown">
+<!--                            <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     Sản phẩm
@@ -96,11 +96,11 @@
                                     <li><a class="dropdown-item" href="#">Quản lý sản phẩm</a></li>
                                     <li><a class="dropdown-item" href="#">Danh mục sản phẩm</a></li>
                                     <li>
-                                        <!-- <hr class="dropdown-divider">
+                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li> 
                                 </ul>
-                            </li>
+                            </li>-->
 
                             <!-- Sự kiện -->
                             <li class="nav-item dropdown">
@@ -154,6 +154,7 @@
                             <th scope="col">Ngày diễn ra</th>
                             <th scope="col">Địa điểm</th>                            
                             <th scope="col">Ngày tạo</th>
+                            <th scope="col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
@@ -196,7 +197,6 @@
             <div class="modal-dialog" style="min-width: 1000px">
                 <form action="events?view=add" method="post">
                     <div class="modal-content">
-
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="staticBackdropLabel">Tạo sự kiện mới</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
